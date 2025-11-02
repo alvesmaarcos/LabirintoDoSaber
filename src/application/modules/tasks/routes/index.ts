@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { MockTaskRepository } from "../../../../infraestructure/repositories/mock/task-repository-impl";
-import { CreateTaskUseCase} from "../use-cases/create-task-use-case";
-import { CreateTaskController } from "../use-cases/create-task-controller";
+import { CreateTaskUseCase} from "../use-cases/create-task/create-task-use-case";
+import { CreateTaskController } from "../use-cases/create-task/create-task-controller";
 
 const tasksRouter = Router();
 

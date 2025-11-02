@@ -3,7 +3,7 @@ import {
     formatValidationErrors,
 } from "@wave-telecom/framework/controllers";
 import { Request, Response } from "express";
-import { createTaskSchema } from "../schemas/create-task-schemas";
+import { createTaskSchema } from "../../schemas/create-task-schemas";
 import { CreateTaskUseCase } from "./create-task-use-case";
 
 export class CreateTaskController extends BaseController {

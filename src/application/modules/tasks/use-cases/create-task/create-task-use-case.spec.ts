@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { TaskRepository } from "../../../../domain/repositories/task-repository";
-import { TaskCategory, TaskType } from "../../../../domain/entities/task";
+import { TaskRepository } from "../../../../../domain/repositories/task-repository";
+import { TaskCategory, TaskType } from "../../../../../domain/entities/task";
 import { CreateTaskUseCase } from "./create-task-use-case";
 import { success, failure } from "@wave-telecom/framework/core";
 
