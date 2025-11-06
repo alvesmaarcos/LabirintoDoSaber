@@ -6,6 +6,8 @@ import { ListTasksUseCase } from "../use-cases/list-tasks/list-tasks-use-case";
 import { ListTasksController } from "../use-cases/list-tasks/list-tasks-controller";
 import { MockEducatorRepository } from "../../../../infraestructure/repositories/mock/educator-repository-impl";
 import { makeAuthMiddleware } from "../../../../infraestructure/middlewares";
+import { UpdateTaskUseCase } from "../use-cases/update-task/update-task-use-case";
+import { UpdateTaskController } from "../use-cases/update-task/update-task-controller";
 
 const tasksRouter = Router();
 
@@ -14,6 +16,9 @@ const taskRepository = new MockTaskRepository();
 const createTaskUseCase = new CreateTaskUseCase(taskRepository);
 
 const listTasksUseCase = new ListTasksUseCase(taskRepository);
+
+const updateTaskUseCase = new UpdateTaskUseCase(taskRepository);
+
 
 const educatorRepository = new MockEducatorRepository();
 
@@ -27,6 +32,10 @@ tasksRouter.post("/create", (req: Request, res: Response) => {
 
 tasksRouter.get("/", (req: Request, res: Response) => {
   new ListTasksController(listTasksUseCase).execute(req, res);
+});
+
+tasksRouter.put("/update", (req: Request, res: Response) => {
+  new UpdateTaskController(updateTaskUseCase).execute(req, res);
 });
 
 export { tasksRouter };
