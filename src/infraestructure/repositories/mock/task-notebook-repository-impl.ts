@@ -31,6 +31,7 @@ export class MockTaskNotebookRepository implements TaskNotebookRepository {
       tasks: [...notebook.tasks],
       createdAt: notebook.createdAt,
       category: TaskNotebookCategory.Reading,
+      description: "Nice description",
     });
     if (!result.ok) {
       return null;

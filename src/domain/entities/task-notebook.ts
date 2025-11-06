@@ -15,6 +15,7 @@ export interface CreateTaskNotebookProps {
   tasks?: Task[];
   category: TaskNotebookCategory;
   createdAt?: Date;
+  description: string;
 }
 
 export class TaskNotebook {
@@ -23,6 +24,7 @@ export class TaskNotebook {
     public readonly educator: Educator,
     public readonly tasks: Task[],
     public readonly category: TaskNotebookCategory,
+    public readonly description: string,
     public readonly createdAt: Date
   ) {}
 
@@ -33,6 +35,7 @@ export class TaskNotebook {
         props.educator,
         props.tasks || [],
         props.category,
+        props.description,
         props.createdAt || new Date()
       );
       return success(notebook);
@@ -53,6 +56,7 @@ export class TaskNotebook {
       this.educator,
       updatedTasks,
       TaskNotebookCategory.Comprehension,
+      this.description,
       this.createdAt
     );
 

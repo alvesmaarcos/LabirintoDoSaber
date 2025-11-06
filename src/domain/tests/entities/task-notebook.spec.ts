@@ -29,6 +29,7 @@ describe("TaskNotebook Entity", () => {
     const result = TaskNotebook.create({
       educator: mockEducator,
       category: TaskNotebookCategory.Comprehension,
+      description: "Nice description",
     });
 
     expect(result.ok).toBe(true);
@@ -46,6 +47,7 @@ describe("TaskNotebook Entity", () => {
       educator: mockEducator,
       tasks: [task],
       category: TaskNotebookCategory.Comprehension,
+      description: "Nice description",
     });
 
     expect(result.ok).toBe(true);
@@ -64,6 +66,7 @@ describe("TaskNotebook Entity", () => {
     const notebookResult = TaskNotebook.create({
       educator: mockEducator,
       category: TaskNotebookCategory.Comprehension,
+      description: "Nice description",
     });
     if (!notebookResult.ok) throw new Error("Notebook inválido para teste");
 
@@ -85,6 +88,7 @@ describe("TaskNotebook Entity", () => {
       educator: mockEducator,
       tasks: [task],
       category: TaskNotebookCategory.Comprehension,
+      description: "Nice description",
     });
     if (!notebookResult.ok) throw new Error("Notebook inválido para teste");
 
@@ -102,6 +106,7 @@ describe("TaskNotebook Entity", () => {
       educator: mockEducator,
       tasks: [task],
       category: TaskNotebookCategory.Comprehension,
+      description: "Nice description",
     });
     if (!notebookResult.ok) throw new Error("Notebook inválido para teste");
 
