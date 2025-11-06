@@ -7,6 +7,10 @@ export interface CreateStudentUseCaseRequest {
   name: string;
   age: number;
   gender: Gender;
+  zipcode: string;
+  road: string;
+  housenumber: string;
+  phonenumber: string;
   learningTopics: string[];
   educatorEmail: string;
 }
@@ -30,6 +34,10 @@ export class CreateStudentUseCase {
       name: request.name,
       age: request.age,
       gender: request.gender,
+      zipcode: request.zipcode,
+      road: request.road,
+      housenumber: request.housenumber,
+      phonenumber: request.phonenumber,
       learningTopics: request.learningTopics,
       educators: [educatorExists],
     });
