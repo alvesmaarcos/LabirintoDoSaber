@@ -29,6 +29,16 @@ export interface CreateTaskProps {
   audioFile?: string;
 }
 
+interface UpdateTaskProps {
+  id: string;
+  category?: TaskCategory;
+  type?: TaskType;
+  prompt?: string;
+  alternatives?: TaskAlternative[];
+  imageFile?: string;
+  audioFile?: string;
+}
+
 export class Task {
   private constructor(
     public readonly id: Uuid,
@@ -66,7 +76,7 @@ export class Task {
     }
   }
 
-  public updateTask(props: Partial<Omit<CreateTaskProps, "id" | "createdAt">>) {
+  public updateTask(props: UpdateTaskProps) {
     const updatedTask = new Task(
       this.id,
       props.category ?? this.category,
@@ -77,8 +87,7 @@ export class Task {
       props.imageFile ?? this.imageFile,
       props.audioFile ?? this.audioFile
     );
-    return success(updatedTask
-    );
+    return success(updatedTask);
   }
 
   private validateTaskStructure(): void {
