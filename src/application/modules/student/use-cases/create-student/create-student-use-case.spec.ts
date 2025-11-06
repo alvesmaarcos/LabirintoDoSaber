@@ -38,6 +38,10 @@ describe("CreateStudentUseCase", () => {
       name: "Alice",
       age: 20,
       gender: Gender.Female,
+      zipcode: "12345",
+      road: "Main St",
+      housenumber: "10A",
+      phonenumber: "1234567890",
       learningTopics: ["Math", "Science"],
       educatorEmail: "nonexistent@example.com",
     };
@@ -60,6 +64,10 @@ describe("CreateStudentUseCase", () => {
       name: "Bob",
       age: 22,
       gender: Gender.Male,
+      zipcode: "67890",
+      road: "Second St",
+      housenumber: "20B",
+      phonenumber: "0987654321",
       learningTopics: ["History", "Geography"],
       educatorEmail: "john@example.com",
     };

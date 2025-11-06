@@ -43,6 +43,10 @@ describe("AssignEducatorUseCase", () => {
       name: "Alice",
       age: 20,
       gender: Gender.Female,
+      zipcode: "12345",
+      road: "Main St",
+      housenumber: "10A",
+      phonenumber: "1234567890",
       learningTopics: ["Math"],
       educators: [currentEducator],
     });
