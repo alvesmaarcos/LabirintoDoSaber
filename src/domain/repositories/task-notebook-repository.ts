@@ -5,6 +5,7 @@ export interface SearchTaskNotebookProps {
   id?: Uuid;
   educatorId?: Uuid;
   category?: TaskNotebookCategory;
+  descriptionContains?: string;
 }
 
 export interface TaskNotebookRepository {
