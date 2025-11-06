@@ -66,6 +66,21 @@ export class Task {
     }
   }
 
+  public updateTask(props: Partial<Omit<CreateTaskProps, "id" | "createdAt">>) {
+    const updatedTask = new Task(
+      this.id,
+      props.category ?? this.category,
+      props.type ?? this.type,
+      props.prompt ?? this.prompt,
+      props.alternatives ?? this.alternatives,
+      this.createdAt,
+      props.imageFile ?? this.imageFile,
+      props.audioFile ?? this.audioFile
+    );
+    return success(updatedTask
+    );
+  }
+
   private validateTaskStructure(): void {
     if (this.alternatives.length < 2) {
       throw new Error("Uma atividade deve ter pelo menos duas alternativas.");
