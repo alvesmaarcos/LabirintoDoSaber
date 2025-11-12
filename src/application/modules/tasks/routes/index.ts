@@ -8,6 +8,8 @@ import { MockEducatorRepository } from "../../../../infraestructure/repositories
 import { makeAuthMiddleware } from "../../../../infraestructure/middlewares";
 import { UpdateTaskUseCase } from "../use-cases/update-task/update-task-use-case";
 import { UpdateTaskController } from "../use-cases/update-task/update-task-controller";
+import { DeleteTaskUseCase } from "../use-cases/delete-task/delete-task-use-case";
+import { DeleteTaskController } from "../use-cases/delete-task/delete-task-controller";
 
 const tasksRouter = Router();
 
@@ -19,8 +21,9 @@ const listTasksUseCase = new ListTasksUseCase(taskRepository);
 
 const updateTaskUseCase = new UpdateTaskUseCase(taskRepository);
 
-
 const educatorRepository = new MockEducatorRepository();
+
+const deleteTaskUseCase = new DeleteTaskUseCase(taskRepository);
 
 const authMiddleware = makeAuthMiddleware(educatorRepository);
 
@@ -36,6 +39,10 @@ tasksRouter.get("/", (req: Request, res: Response) => {
 
 tasksRouter.put("/update", (req: Request, res: Response) => {
   new UpdateTaskController(updateTaskUseCase).execute(req, res);
+});
+
+tasksRouter.delete("/delete/:id", (req: Request, res: Response) => {
+  new DeleteTaskController(deleteTaskUseCase).execute(req, res);
 });
 
 export { tasksRouter };
