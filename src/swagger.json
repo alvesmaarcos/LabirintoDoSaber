@@ -203,6 +203,30 @@
         }
       }
     },
+    "**/task-notebook/": {
+      "get": {
+        "tags": ["Task Notebook (Educator Only)"],
+        "summary": "Lists and filters task notebooks created by the educator.",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "schema": { "type": "string", "format": "uuid" }, "required": false, "description": "Filter by specific Task Notebook ID." },
+          { "name": "educatorId", "in": "query", "schema": { "type": "string", "format": "uuid" }, "required": false, "description": "Filter by Educator ID (only useful for administrators or if educator can view others)." },
+          { "name": "category", "in": "query", "schema": { "type": "string" }, "required": false, "description": "Filter by notebook category." },
+          { "name": "descriptionContains", "in": "query", "schema": { "type": "string" }, "required": false, "description": "Filter by text contained in the description." }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of task notebooks returned successfully.",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/TaskNotebook" } }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized." }
+        }
+      }
+    },
     "/tasks/create": {
       "post": {
         "tags": ["Task Management (Educator Only)"],
@@ -278,6 +302,27 @@
             }
           },
           "401": { "description": "Unauthorized." },
+          "404": { "description": "Task not found." }
+        }
+      }
+    },
+    "**/tasks/delete/{id}": { 
+      "delete": {
+        "tags": ["Task Management (Educator Only)"],
+        "summary": "Deletes a Task by its ID.",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": { "type": "string", "format": "uuid" },
+            "required": true,
+            "description": "The ID of the Task to be deleted."
+          }
+        ],
+        "responses": {
+          "204": { "description": "Task successfully deleted (No Content)." },
+          "401": { "description": "Unauthorized. Missing or invalid token." },
           "404": { "description": "Task not found." }
         }
       }

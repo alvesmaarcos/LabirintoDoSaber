@@ -5,6 +5,8 @@ import { MockTaskRepository } from "../../../../infraestructure/repositories/moc
 import { MockTaskNotebookRepository } from "../../../../infraestructure/repositories/mock/task-notebook-repository-impl";
 import { CreateTaskNotebookUseCase } from "../use-cases/create-task-notebook/create-task-notebook-use-case";
 import { CreateTaskNotebookController } from "../use-cases/create-task-notebook/create-task-notebook-controller";
+import { ListTasksNotebooksUseCase } from "../use-cases/list-tasks-notebooks/list-tasks-notebooks-use-case";
+import { ListTasksNotebooksController } from "../use-cases/list-tasks-notebooks/list-tasks-notebooks-controller";
 
 const taskNotebookRouter = Router();
 
@@ -18,12 +20,20 @@ const createTaskNotebookUseCase = new CreateTaskNotebookUseCase(
   taskRepository
 );
 
+const listTasksNotebooksUseCase = new ListTasksNotebooksUseCase(
+  taskNotebookRepository
+);
+
 const authMiddleware = makeAuthMiddleware(educatorRepository);
 
 taskNotebookRouter.use(authMiddleware);
 
 taskNotebookRouter.post("/create", async (req: Request, res: Response) => {
   new CreateTaskNotebookController(createTaskNotebookUseCase).execute(req, res);
+});
+
+taskNotebookRouter.get("/", async (req: Request, res: Response) => {
+  new ListTasksNotebooksController(listTasksNotebooksUseCase).execute(req, res);
 });
 
 export { taskNotebookRouter };
