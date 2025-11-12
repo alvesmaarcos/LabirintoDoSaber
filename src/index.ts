@@ -21,9 +21,4 @@ const swaggerDocument = require(path.resolve(__dirname, "swagger.json"));
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-  console.log(`Documentação Swagger em: http://localhost:${port}/api-docs`);
-});
-
 module.exports = app;
