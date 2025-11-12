@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Educator {
+  id        String   @id @map("_id")
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  notebooks TaskNotebook[]
+  tokens    AuthToken[]
+
+  educatorStudents EducatorStudent[]
+}
+
+model Student {
+  id             String   @id @map("_id")
+  name           String
+  age            Int
+  gender         Gender
+  zipcode        String
+  road           String
+  housenumber    String
+  phonenumber    String
+  learningTopics String[]
+  createdAt      DateTime @default(now())
+
+  educatorStudents EducatorStudent[]
+}
+
+model EducatorStudent {
+  id         String @id @map("_id")
+  educatorId String @db.ObjectId
+  studentId  String @db.ObjectId
+
+  educator Educator @relation(fields: [educatorId], references: [id])
+  student  Student  @relation(fields: [studentId], references: [id])
+}
+
+model Task {
+  id           String            @id @map("_id")
+  category     TaskCategory
+  type         TaskType
+  prompt       String
+  alternatives TaskAlternative[]
+  imageFile    String?
+  audioFile    String?
+  createdAt    DateTime          @default(now())
+
+  notebookId String?       @db.ObjectId
+  notebook   TaskNotebook? @relation(fields: [notebookId], references: [id])
+}
+
+type TaskAlternative {
+  id        String
+  text      String
+  isCorrect Boolean
+}
+
+model TaskNotebook {
+  id          String               @id @map("_id")
+  educatorId  String               @db.ObjectId
+  educator    Educator             @relation(fields: [educatorId], references: [id])
+  tasks       Task[]
+  category    TaskNotebookCategory
+  description String
+  createdAt   DateTime             @default(now())
+}
+
+model AuthToken {
+  id       String   @id @map("_id")
+  token    String
+  userId   String   @db.ObjectId
+  educator Educator @relation(fields: [userId], references: [id])
+}
+
+enum Gender {
+  male
+  female
+}
+
+enum TaskCategory {
+  Reading
+  Writing
+  Vocabulary
+  Comprehension
+}
+
+enum TaskType {
+  MultipleChoice
+  MultipleChoiceWithMedia
+}
+
+enum TaskNotebookCategory {
+  Reading
+  Writing
+  Vocabulary
+  Comprehension
+}
