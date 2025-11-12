@@ -1,9 +1,9 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import path from "path";
 import swaggerUi from "swagger-ui-express";
 import { router } from "./application/routes";
+import swaggerDocument from "./swagger.json";
 
 const app = express();
 
@@ -16,8 +16,6 @@ app.use(router);
 app.get("/", (req, res) => {
   res.json({ message: "Hello from Express on Vercel!" });
 });
-
-const swaggerDocument = require(path.resolve(__dirname, "swagger.json"));
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
