@@ -11,7 +11,7 @@
       "description": "Local Development Server"
     },
     {
-      "url": "https://api.labirintodosaber.com/",
+      "url": "https://labirinto-do-saber.vercel.app",
       "description": "Production Server"
     }
   ],
