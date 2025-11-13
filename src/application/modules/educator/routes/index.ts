@@ -11,11 +11,18 @@ import { NodemailerMailService } from "../../../../infraestructure/services/mail
 import { GenerateAuthTokenUseCase } from "../use-cases/generate-auth-token/generate-auth-token-use-case";
 import { MockAuthTokenRepository } from "../../../../infraestructure/repositories/mock/auth-token-repository-impl";
 import { GenerateAuthTokenController } from "../use-cases/generate-auth-token/generate-auth-token-controller";
+import { GetEducatorProfileUseCase } from "../use-cases/get-educator-profile/get-educator-profile-use-case";
+import { GetEducatorProfileController } from "../use-cases/get-educator-profile/get-educator-profile-controller"
+import { makeAuthMiddleware } from "../../../../infraestructure/middlewares/index"; 
 
 const educatorRouter = Router();
 
 const educatorRepository = new MockEducatorRepository();
 const authService = new JwtAuthService();
+
+
+const authMiddleware = makeAuthMiddleware(educatorRepository);
+
 
 const signInEducatorUseCase = new SignInEducatorUseCase(
   educatorRepository,
@@ -27,6 +34,10 @@ const updatePasswordEducatorUseCase = new UpdatePasswordEducatorUseCase(
   educatorRepository
 );
 
+const getEducatorProfileUseCase = new GetEducatorProfileUseCase(
+  educatorRepository
+);
+
 const authTokenRepository = new MockAuthTokenRepository();
 const mailer = new NodemailerMailService();
 const generateAuthTokenUseCase = new GenerateAuthTokenUseCase(
@@ -34,6 +45,8 @@ const generateAuthTokenUseCase = new GenerateAuthTokenUseCase(
   authTokenRepository,
   mailer
 );
+
+
 
 educatorRouter.post("/sign-in", (req: Request, res: Response) => {
   new SignInEducatorController(signInEducatorUseCase).execute(req, res);
@@ -53,5 +66,15 @@ educatorRouter.post("/update-password", async (req: Request, res: Response) => {
 educatorRouter.put("/generate-token", async (req: Request, res: Response) => {
   new GenerateAuthTokenController(generateAuthTokenUseCase).execute(req, res);
 });
+
+
+educatorRouter.get(
+  "/me",
+  authMiddleware, 
+  (req: Request, res: Response) => {
+   
+    new GetEducatorProfileController(getEducatorProfileUseCase).execute(req, res);
+  }
+);
 
 export { educatorRouter };

@@ -10,6 +10,8 @@ export class MockEducatorRepository implements EducatorRepository {
 
   async getByEmail(email: string): Promise<Educator | null> {
     const educator = this.data.find((educator) => educator.email === email);
+    
+    
     return educator ? Educator.create({
       id: educator.id,
       name: educator.name,
@@ -20,21 +22,30 @@ export class MockEducatorRepository implements EducatorRepository {
   }
 
   async save(educator: Educator): Promise<Educator> {
+    this.data = this.data.filter(e => e.id.toString() !== educator.id.toString());
     this.data.push(educator);
     return educator;
   }
 
   async search(props: SearchEducatorProps): Promise<Educator[] | null> {
     const results = this.data.filter((educator) => {
-      if (props.id && educator.id !== props.id) return false;
+      
+      
+      if (props.id && educator.id.toString() !== props.id.toString()) {
+        return false;
+      }
+   
+
       if (props.email && educator.email !== props.email) return false;
       if (props.name && educator.name !== props.name) return false;
       return true;
     });
+
     return results.length > 0 ? results : null;
   }
 
   async delete(id: Uuid): Promise<void> {
-    this.data = this.data.filter((educator) => educator.id !== id);
+    
+    this.data = this.data.filter((educator) => educator.id.toString() !== id.toString());
   }
 }
