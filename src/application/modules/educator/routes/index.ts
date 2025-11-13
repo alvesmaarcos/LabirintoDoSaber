@@ -1,5 +1,4 @@
 import { Request, Response, Router } from "express";
-import { MockEducatorRepository } from "../../../../infraestructure/repositories/mock/educator-repository-impl";
 import { SignInEducatorUseCase } from "../use-cases/sign-in-educator/sign-in-educator-use-case";
 import { RegisterEducatorUseCase } from "../use-cases/register-educator/register-educator-use-case";
 import { SignInEducatorController } from "../use-cases/sign-in-educator/sign-in-educator-controller";
@@ -12,17 +11,16 @@ import { GenerateAuthTokenUseCase } from "../use-cases/generate-auth-token/gener
 import { MockAuthTokenRepository } from "../../../../infraestructure/repositories/mock/auth-token-repository-impl";
 import { GenerateAuthTokenController } from "../use-cases/generate-auth-token/generate-auth-token-controller";
 import { GetEducatorProfileUseCase } from "../use-cases/get-educator-profile/get-educator-profile-use-case";
-import { GetEducatorProfileController } from "../use-cases/get-educator-profile/get-educator-profile-controller"
-import { makeAuthMiddleware } from "../../../../infraestructure/middlewares/index"; 
+import { GetEducatorProfileController } from "../use-cases/get-educator-profile/get-educator-profile-controller";
+import { makeAuthMiddleware } from "../../../../infraestructure/middlewares/index";
+import { makeEducatorRepository } from "../../../../infraestructure/factories";
 
 const educatorRouter = Router();
 
-const educatorRepository = new MockEducatorRepository();
+const educatorRepository = makeEducatorRepository({ isMock: false });
 const authService = new JwtAuthService();
 
-
 const authMiddleware = makeAuthMiddleware(educatorRepository);
-
 
 const signInEducatorUseCase = new SignInEducatorUseCase(
   educatorRepository,
@@ -46,8 +44,6 @@ const generateAuthTokenUseCase = new GenerateAuthTokenUseCase(
   mailer
 );
 
-
-
 educatorRouter.post("/sign-in", (req: Request, res: Response) => {
   new SignInEducatorController(signInEducatorUseCase).execute(req, res);
 });
@@ -67,14 +63,8 @@ educatorRouter.put("/generate-token", async (req: Request, res: Response) => {
   new GenerateAuthTokenController(generateAuthTokenUseCase).execute(req, res);
 });
 
-
-educatorRouter.get(
-  "/me",
-  authMiddleware, 
-  (req: Request, res: Response) => {
-   
-    new GetEducatorProfileController(getEducatorProfileUseCase).execute(req, res);
-  }
-);
+educatorRouter.get("/me", authMiddleware, (req: Request, res: Response) => {
+  new GetEducatorProfileController(getEducatorProfileUseCase).execute(req, res);
+});
 
 export { educatorRouter };

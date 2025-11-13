@@ -1,19 +1,21 @@
 import { Request, Response, Router } from "express";
-import { MockTaskRepository } from "../../../../infraestructure/repositories/mock/task-repository-impl";
 import { CreateTaskUseCase } from "../use-cases/create-task/create-task-use-case";
 import { CreateTaskController } from "../use-cases/create-task/create-task-controller";
 import { ListTasksUseCase } from "../use-cases/list-tasks/list-tasks-use-case";
 import { ListTasksController } from "../use-cases/list-tasks/list-tasks-controller";
-import { MockEducatorRepository } from "../../../../infraestructure/repositories/mock/educator-repository-impl";
 import { makeAuthMiddleware } from "../../../../infraestructure/middlewares";
 import { UpdateTaskUseCase } from "../use-cases/update-task/update-task-use-case";
 import { UpdateTaskController } from "../use-cases/update-task/update-task-controller";
 import { DeleteTaskUseCase } from "../use-cases/delete-task/delete-task-use-case";
 import { DeleteTaskController } from "../use-cases/delete-task/delete-task-controller";
+import {
+  makeEducatorRepository,
+  makeTaskRepository,
+} from "../../../../infraestructure/factories";
 
 const taskRouter = Router();
 
-const taskRepository = new MockTaskRepository();
+const taskRepository = makeTaskRepository({ isMock: false });
 
 const createTaskUseCase = new CreateTaskUseCase(taskRepository);
 
@@ -21,7 +23,7 @@ const listTasksUseCase = new ListTasksUseCase(taskRepository);
 
 const updateTaskUseCase = new UpdateTaskUseCase(taskRepository);
 
-const educatorRepository = new MockEducatorRepository();
+const educatorRepository = makeEducatorRepository({ isMock: false });
 
 const deleteTaskUseCase = new DeleteTaskUseCase(taskRepository);
 

@@ -1,6 +1,4 @@
 import { Router } from "express";
-import { MockEducatorRepository } from "../../../../infraestructure/repositories/mock/educator-repository-impl";
-import { MockStudentRepository } from "../../../../infraestructure/repositories/mock/student-repository-impl";
 import { CreateStudentUseCase } from "../use-cases/create-student/create-student-use-case";
 import { CreateStudentController } from "../use-cases/create-student/create-student-controller";
 import { AssignEducatorUseCase } from "../use-cases/assign-educator/assign-educator-use-case";
@@ -8,11 +6,15 @@ import { AssignEducatorController } from "../use-cases/assign-educator/assign-ed
 import { ListStudentsByEducatorUseCase } from "../use-cases/list-students-by-educator/list-students-by-educator-use-case";
 import { ListStudentsByEducatorController } from "../use-cases/list-students-by-educator/list-students-by-educator-controller";
 import { makeAuthMiddleware } from "../../../../infraestructure/middlewares";
+import {
+  makeEducatorRepository,
+  makeStudentRepository,
+} from "../../../../infraestructure/factories";
 
 const studentRouter = Router();
 
-const educatorRepository = new MockEducatorRepository();
-const studentRepository = new MockStudentRepository();
+const educatorRepository = makeEducatorRepository({ isMock: false });
+const studentRepository = makeStudentRepository({ isMock: false });
 
 const createStudentUseCase = new CreateStudentUseCase(
   studentRepository,
