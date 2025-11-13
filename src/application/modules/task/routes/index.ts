@@ -11,7 +11,7 @@ import { UpdateTaskController } from "../use-cases/update-task/update-task-contr
 import { DeleteTaskUseCase } from "../use-cases/delete-task/delete-task-use-case";
 import { DeleteTaskController } from "../use-cases/delete-task/delete-task-controller";
 
-const tasksRouter = Router();
+const taskRouter = Router();
 
 const taskRepository = new MockTaskRepository();
 
@@ -27,22 +27,22 @@ const deleteTaskUseCase = new DeleteTaskUseCase(taskRepository);
 
 const authMiddleware = makeAuthMiddleware(educatorRepository);
 
-tasksRouter.use(authMiddleware);
+taskRouter.use(authMiddleware);
 
-tasksRouter.post("/create", (req: Request, res: Response) => {
+taskRouter.post("/create", (req: Request, res: Response) => {
   new CreateTaskController(createTaskUseCase).execute(req, res);
 });
 
-tasksRouter.get("/", (req: Request, res: Response) => {
+taskRouter.get("/", (req: Request, res: Response) => {
   new ListTasksController(listTasksUseCase).execute(req, res);
 });
 
-tasksRouter.put("/update", (req: Request, res: Response) => {
+taskRouter.put("/update", (req: Request, res: Response) => {
   new UpdateTaskController(updateTaskUseCase).execute(req, res);
 });
 
-tasksRouter.delete("/delete/:id", (req: Request, res: Response) => {
+taskRouter.delete("/delete/:id", (req: Request, res: Response) => {
   new DeleteTaskController(deleteTaskUseCase).execute(req, res);
 });
 
-export { tasksRouter };
+export { taskRouter };

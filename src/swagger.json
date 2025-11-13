@@ -7,12 +7,12 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000/api/v1",
+      "url": "http://localhost:3000/",
       "description": "Local Development Server"
     },
     {
-      "url": "https://api.labirintodosaber.com/v1",
-      "description": "Production Server (Example)"
+      "url": "https://api.labirintodosaber.com/",
+      "description": "Production Server"
     }
   ],
   "paths": {
@@ -203,7 +203,7 @@
         }
       }
     },
-    "**/task-notebook/": {
+    "/task-notebook/": {
       "get": {
         "tags": ["Task Notebook (Educator Only)"],
         "summary": "Lists and filters task notebooks created by the educator.",
@@ -227,7 +227,7 @@
         }
       }
     },
-    "/tasks/create": {
+    "/task/create": {
       "post": {
         "tags": ["Task Management (Educator Only)"],
         "summary": "Creates a new Task (quiz question).",
@@ -254,7 +254,7 @@
         }
       }
     },
-    "/tasks/": {
+    "/task/": {
       "get": {
         "tags": ["Task Management (Educator Only)"],
         "summary": "Lists and filters tasks created by the educator.",
@@ -278,7 +278,7 @@
         }
       }
     },
-    "/tasks/update": {
+    "/task/update": {
       "put": {
         "tags": ["Task Management (Educator Only)"],
         "summary": "Updates an existing Task.",
@@ -306,7 +306,7 @@
         }
       }
     },
-    "**/tasks/delete/{id}": { 
+    "/task/delete/{id}": { 
       "delete": {
         "tags": ["Task Management (Educator Only)"],
         "summary": "Deletes a Task by its ID.",
