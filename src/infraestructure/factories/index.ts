@@ -9,6 +9,9 @@ import { MockTaskNotebookRepository } from "../repositories/mock/task-notebook-r
 import { TaskNotebookRepositoryImpl } from "../repositories/prisma/task-notebook-repository-impl";
 import { MockTaskRepository } from "../repositories/mock/task-repository-impl";
 import { TaskRepositoryImpl } from "../repositories/prisma/task-repository-impl";
+import { TaskNotebokSessionRepositoryImpl } from "../repositories/prisma/task-notebook-session-repository-impl";
+import { TaskNotebookRepository } from "../../domain/repositories/task-notebook-repository";
+import { TaskNotebookSessionRepository } from "../../domain/repositories/task-notebook-session-repository";
 
 const prismaClient = new PrismaClient();
 
@@ -50,3 +53,8 @@ export const makeTaskRepository = (isMock: IsMock) => {
   }
   return new TaskRepositoryImpl(prismaClient);
 };
+
+export const makeTaskNotebookSessionRepository =
+  (): TaskNotebookSessionRepository => {
+    return new TaskNotebokSessionRepositoryImpl(prismaClient);
+  };
