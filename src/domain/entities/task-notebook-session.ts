@@ -9,7 +9,7 @@ export interface TaskAnswer {
 }
 
 export class TaskNotebookSession {
-  private constructor(
+  constructor(
     public readonly id: Uuid,
     public readonly studentId: Uuid,
     public readonly notebookId: Uuid,

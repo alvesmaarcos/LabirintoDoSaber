@@ -104,3 +104,20 @@ enum TaskNotebookCategory {
   Vocabulary
   Comprehension
 }
+
+model TaskNotebookSession {
+  id         String        @id @map("_id")
+  studentId  String        @db.ObjectId
+  notebookId String        @db.ObjectId
+  startedAt  DateTime
+  finishedAt DateTime?
+  answers    TaskAnswer[]
+}
+
+type TaskAnswer {
+  taskId               String   @db.ObjectId
+  selectedAlternativeId String   @db.ObjectId
+  isCorrect            Boolean
+  timeToAnswer         Int      // segundos
+  answeredAt           DateTime
+}
