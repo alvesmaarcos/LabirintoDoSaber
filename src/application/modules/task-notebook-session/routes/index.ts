@@ -13,6 +13,8 @@ import { FinishTaskNotebookSessionUseCase } from "../use-cases/finish-task-noteb
 import { StartTaskNotebookSessionController } from "../use-cases/start-task-notebook-session/start-task-session-controller";
 import { AnswerTaskNotebookSessionController } from "../use-cases/answer-task-notebook-session/answer-task-notebook-session-controller";
 import { FinishTaskNotebookController } from "../use-cases/finish-task-notebook-session/finish-task-notebook-session-controller";
+import { ListTaskNotebookSessionByStudentIdUseCase } from "../use-cases/list-task-notebook-session-by-student-id/list-task-notebook-session-by-student-id-use-case";
+import { ListTaskNotebookSessionByStudentIdController } from "../use-cases/list-task-notebook-session-by-student-id/list-task-notebook-session-by-student-id-controller";
 
 const taskNotebookSessionRouter = Router();
 
@@ -39,6 +41,9 @@ const finishTaskNotebookSessionUseCase = new FinishTaskNotebookSessionUseCase(
   taskSessionRepository
 );
 
+const listTaskNotebookSessionByStudentIdUseCase =
+  new ListTaskNotebookSessionByStudentIdUseCase(taskSessionRepository);
+
 taskNotebookSessionRouter.use(authMiddleware);
 
 taskNotebookSessionRouter.post("/start", (req: Request, res: Response) => {
@@ -59,5 +64,14 @@ taskNotebookSessionRouter.post("/finish", (req: Request, res: Response) => {
     res
   );
 });
+
+taskNotebookSessionRouter.get(
+  "/student/:studentId",
+  (req: Request, res: Response) => {
+    new ListTaskNotebookSessionByStudentIdController(
+      listTaskNotebookSessionByStudentIdUseCase
+    ).execute(req, res);
+  }
+);
 
 export { taskNotebookSessionRouter };

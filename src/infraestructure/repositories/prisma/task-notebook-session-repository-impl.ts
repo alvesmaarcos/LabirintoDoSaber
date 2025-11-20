@@ -26,11 +26,19 @@ export class TaskNotebokSessionRepositoryImpl
       },
     });
   }
+
   async getById(id: Uuid): Promise<TaskNotebookSession | null> {
     const result = await this.prismaService.taskNotebookSession.findUnique({
       where: { id: id.value },
     });
     return result ? this.mapToEntity(result) : null;
+  }
+
+  async listByStudentId(studentId: Uuid): Promise<TaskNotebookSession[]> {
+    const results = await this.prismaService.taskNotebookSession.findMany({
+      where: { studentId: studentId.value },
+    });
+    return results.map((data) => this.mapToEntity(data));
   }
 
   private mapToEntity(data: prismaTaskNotebookSession): TaskNotebookSession {

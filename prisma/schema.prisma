@@ -71,7 +71,7 @@ model TaskNotebook {
   tasks       Task[]
   category    TaskNotebookCategory
   description String
-  createdAt   DateTime             @default(now())
+  createdAt   DateTime             
 }
 
 model AuthToken {

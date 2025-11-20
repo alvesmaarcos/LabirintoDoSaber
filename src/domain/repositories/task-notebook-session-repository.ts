@@ -4,4 +4,5 @@ import { TaskNotebookSession } from "../entities/task-notebook-session";
 export interface TaskNotebookSessionRepository {
   save(session: TaskNotebookSession): Promise<void>;
   getById(id: Uuid): Promise<TaskNotebookSession | null>;
+  listByStudentId(studentId: Uuid): Promise<TaskNotebookSession[]>;
 }
