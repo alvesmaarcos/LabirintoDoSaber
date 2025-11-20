@@ -37,8 +37,8 @@ model Student {
 
 model EducatorStudent {
   id         String @id @map("_id")
-  educatorId String @db.ObjectId
-  studentId  String @db.ObjectId
+  educatorId String 
+  studentId  String 
 
   educator Educator @relation(fields: [educatorId], references: [id])
   student  Student  @relation(fields: [studentId], references: [id])
@@ -54,7 +54,7 @@ model Task {
   audioFile    String?
   createdAt    DateTime          @default(now())
 
-  notebookId String?       @db.ObjectId
+  notebookId String?       
   notebook   TaskNotebook? @relation(fields: [notebookId], references: [id])
 }
 
@@ -66,7 +66,7 @@ type TaskAlternative {
 
 model TaskNotebook {
   id          String               @id @map("_id")
-  educatorId  String               @db.ObjectId
+  educatorId  String               
   educator    Educator             @relation(fields: [educatorId], references: [id])
   tasks       Task[]
   category    TaskNotebookCategory
@@ -77,7 +77,7 @@ model TaskNotebook {
 model AuthToken {
   id       String   @id @map("_id")
   token    String
-  userId   String   @db.ObjectId
+  userId   String   
   educator Educator @relation(fields: [userId], references: [id])
 }
 
@@ -107,16 +107,16 @@ enum TaskNotebookCategory {
 
 model TaskNotebookSession {
   id         String        @id @map("_id")
-  studentId  String        @db.ObjectId
-  notebookId String        @db.ObjectId
+  studentId  String        
+  notebookId String        
   startedAt  DateTime
   finishedAt DateTime?
   answers    TaskAnswer[]
 }
 
 type TaskAnswer {
-  taskId               String   @db.ObjectId
-  selectedAlternativeId String   @db.ObjectId
+  taskId               String   
+  selectedAlternativeId String   
   isCorrect            Boolean
   timeToAnswer         Int      // segundos
   answeredAt           DateTime

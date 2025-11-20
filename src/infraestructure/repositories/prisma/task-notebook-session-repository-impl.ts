@@ -23,6 +23,15 @@ export class TaskNotebokSessionRepositoryImpl
       update: {
         startedAt: session.startedAt,
         finishedAt: session.finishedAt,
+        answers: {
+          set: session.answers.map((a) => ({
+            taskId: a.taskId.value,
+            selectedAlternativeId: a.selectedAlternativeId.value,
+            isCorrect: a.isCorrect,
+            timeToAnswer: a.timeToAnswer,
+            answeredAt: a.answeredAt,
+          })),
+        },
       },
     });
   }

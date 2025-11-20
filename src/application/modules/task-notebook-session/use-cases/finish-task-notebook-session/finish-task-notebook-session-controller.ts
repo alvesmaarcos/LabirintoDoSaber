@@ -4,6 +4,7 @@ import {
 } from "@wave-telecom/framework/controllers";
 import { FinishTaskNotebookSessionUseCase } from "./finish-task-notebook-session-use-case";
 import { Request, Response } from "express";
+import { finishTaskNotebookSessionSchema } from "../../schemas/finish-task-notebook-session.schema";
 
 export class FinishTaskNotebookController extends BaseController {
   constructor(private useCase: FinishTaskNotebookSessionUseCase) {
@@ -11,7 +12,9 @@ export class FinishTaskNotebookController extends BaseController {
   }
 
   async executeImpl(req: Request, res: Response): Promise<unknown> {
-    const validation = req.body;
+    const validation = await finishTaskNotebookSessionSchema.safeParseAsync(
+      req.body
+    );
     if (!validation.success) {
       const errors = formatValidationErrors(validation.error);
       return this.clientError(res, undefined, errors);
