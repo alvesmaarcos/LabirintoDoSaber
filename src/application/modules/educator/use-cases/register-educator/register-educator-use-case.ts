@@ -33,6 +33,11 @@ export class RegisterEducatorUseCase {
 
     await this.educatorRepository.save(educator);
 
-    return success(void 0);
+    const res = ({
+      id: educator.id,
+      name: educator.name,
+    })
+
+    return success(res);
   }
 }

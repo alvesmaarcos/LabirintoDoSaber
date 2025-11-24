@@ -1,15 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { EducatorRepository } from "../../../../../domain/repositories/educator-repository";
-import { Educator } from "../../../../../domain/entities/educator";
-import { success, failure } from "@wave-telecom/framework/core";
 import { RegisterEducatorUseCase } from "./register-educator-use-case";
+import { EducatorRepository } from "../../../../../domain/repositories/educator-repository";
+import { success, failure } from "@wave-telecom/framework/core";
 
-const mockEducatorRepository = (): EducatorRepository => {
-  return {
+// Mock do repositório
+const mockEducatorRepository = (): EducatorRepository =>
+  ({
     getByEmail: vi.fn(),
     save: vi.fn(),
-  } as unknown as EducatorRepository;
-};
+  } as unknown as EducatorRepository);
 
 describe("RegisterEducatorUseCase", () => {
   let educatorRepository: EducatorRepository;
@@ -21,20 +20,11 @@ describe("RegisterEducatorUseCase", () => {
   });
 
   it("should fail if educator already exists", async () => {
-    (educatorRepository.getByEmail as any).mockResolvedValue(true);
-
-    const result = await useCase.execute({
-      name: "John Doe",
-      email: "john@example.com",
-      password: "password123",
+    (educatorRepository.getByEmail as any).mockResolvedValue({
+      id: "123",
+      name: "Jane Doe",
+      email: "jane@example.com",
     });
-
-    expect(result).toEqual(failure("EDUCATOR_ALREADY_EXISTS"));
-    expect(educatorRepository.save).not.toHaveBeenCalled();
-  });
-
-  it("should create educator if not exists", async () => {
-    (educatorRepository.getByEmail as any).mockResolvedValue(null);
 
     const result = await useCase.execute({
       name: "Jane Doe",
@@ -42,10 +32,36 @@ describe("RegisterEducatorUseCase", () => {
       password: "password123",
     });
 
-    expect(result).toEqual(success(void 0));
-    expect(educatorRepository.save).toHaveBeenCalled();
-    const savedEducator = (educatorRepository.save as any).mock.calls[0][0];
-    expect(savedEducator.name).toBe("Jane Doe");
-    expect(savedEducator.email).toBe("jane@example.com");
+    expect(result).toEqual(failure("EDUCATOR_ALREADY_EXISTS"));
+    expect(educatorRepository.save).not.toHaveBeenCalled();
   });
+
+  it("should register educator successfully", async () => {
+    (educatorRepository.getByEmail as any).mockResolvedValue(null);
+
+    const result = await useCase.execute({
+      name: "John Doe",
+      email: "john@example.com",
+      password: "mypassword",
+    });
+
+    expect(result.ok).toBe(true);
+
+    // captura o Educator real salvo
+    const savedEducator = (educatorRepository.save as any).mock.calls[0][0];
+
+    if (result.ok) {
+      expect(result.value).toEqual({
+        id: savedEducator.id, // agora verifica o ID exato
+        name: "John Doe",
+      });
+    }
+
+    expect(educatorRepository.save).toHaveBeenCalledTimes(1);
+
+    expect(savedEducator.name).toBe("John Doe");
+    expect(savedEducator.email).toBe("john@example.com");
+    expect(savedEducator.password).not.toBe("mypassword");
+  });
+
 });

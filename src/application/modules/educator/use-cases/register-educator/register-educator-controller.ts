@@ -27,8 +27,8 @@ export class RegisterEducatorController extends BaseController {
       if (result.error == "EDUCATOR_ALREADY_EXISTS") {
         return this.clientError(res, "EDUCATOR_ALREADY_EXISTS");
       }
+      return this.clientError(res, "FAIL");
     }
-
-    return this.created(res);
+    return this.ok(res, result.value);
   }
 }
