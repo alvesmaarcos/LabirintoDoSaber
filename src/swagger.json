@@ -78,7 +78,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/EducatorUpdatePasswordBody" }
+              "schema": {
+                "$ref": "#/components/schemas/EducatorUpdatePasswordBody"
+              }
             }
           }
         },
@@ -102,7 +104,9 @@
           }
         },
         "responses": {
-          "200": { "description": "Token generated and sent (or success to prevent email leakage)." },
+          "200": {
+            "description": "Token generated and sent (or success to prevent email leakage)."
+          },
           "404": { "description": "Email not found." }
         }
       }
@@ -186,7 +190,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/TaskNotebookCreationBody" }
+              "schema": {
+                "$ref": "#/components/schemas/TaskNotebookCreationBody"
+              }
             }
           }
         },
@@ -209,21 +215,223 @@
         "summary": "Lists and filters task notebooks created by the educator.",
         "security": [{ "BearerAuth": [] }],
         "parameters": [
-          { "name": "id", "in": "query", "schema": { "type": "string", "format": "uuid" }, "required": false, "description": "Filter by specific Task Notebook ID." },
-          { "name": "educatorId", "in": "query", "schema": { "type": "string", "format": "uuid" }, "required": false, "description": "Filter by Educator ID (only useful for administrators or if educator can view others)." },
-          { "name": "category", "in": "query", "schema": { "type": "string" }, "required": false, "description": "Filter by notebook category." },
-          { "name": "descriptionContains", "in": "query", "schema": { "type": "string" }, "required": false, "description": "Filter by text contained in the description." }
+          {
+            "name": "id",
+            "in": "query",
+            "schema": { "type": "string", "format": "uuid" },
+            "required": false,
+            "description": "Filter by specific Task Notebook ID."
+          },
+          {
+            "name": "educatorId",
+            "in": "query",
+            "schema": { "type": "string", "format": "uuid" },
+            "required": false,
+            "description": "Filter by Educator ID (only useful for administrators or if educator can view others)."
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "schema": { "type": "string" },
+            "required": false,
+            "description": "Filter by notebook category."
+          },
+          {
+            "name": "descriptionContains",
+            "in": "query",
+            "schema": { "type": "string" },
+            "required": false,
+            "description": "Filter by text contained in the description."
+          }
         ],
         "responses": {
           "200": {
             "description": "List of task notebooks returned successfully.",
             "content": {
               "application/json": {
-                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/TaskNotebook" } }
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/TaskNotebook" }
+                }
               }
             }
           },
           "401": { "description": "Unauthorized." }
+        }
+      }
+    },
+    "/task-notebook-session/start": {
+      "post": {
+        "tags": ["Task Notebook Session (Educator Only)"],
+        "summary": "Starts a new Task Notebook session for a specific student.",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "description": "Student ID and Task Notebook ID.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartTaskNotebookSessionBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Session started successfully, returns the session object.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TaskNotebookSession" }
+              }
+            }
+          },
+          "400": { "description": "Invalid data format or missing fields." },
+          "401": { "description": "Unauthorized. Missing or invalid token." },
+          "404": { "description": "STUDENT_NOT_FOUND or NOTEBOOK_NOT_FOUND." },
+          "500": {
+            "description": "SESSION_CREATION_FAILED or Internal Server Error."
+          }
+        }
+      }
+    },
+    "/task-notebook-session/answer": {
+      "post": {
+        "tags": ["Task Notebook Session (Student/Educator)"],
+        "summary": "Records a student's answer for a task within an active session.",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "description": "Session ID, Task ID, selected alternative ID, and time taken to answer.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnswerTaskNotebookSessionBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Answer recorded successfully. Returns the updated session object.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TaskNotebookSession" }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid data format or business rules violated (SESSION_ALREADY_FINISHED, TASK_NOT_IN_NOTEBOOK, TASK_ALREADY_ANSWERED)."
+          },
+          "401": { "description": "Unauthorized. Missing or invalid token." },
+          "404": {
+            "description": "SESSION_NOT_FOUND, TASK_NOT_FOUND, or NOTEBOOK_NOT_FOUND."
+          },
+          "500": {
+            "description": "Internal Server Error or ANSWER_CREATION_FAILED."
+          }
+        }
+      }
+    },
+    "/task-notebook-session/finish": {
+      "post": {
+        "tags": ["Task Notebook Session (Student/Educator)"],
+        "summary": "Explicitly finishes an active Task Notebook session.",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "description": "The ID of the session to be finished.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinishTaskNotebookSessionBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Session finished successfully. Returns the finalized session object with results.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TaskNotebookSession" }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid data format or business rule violated (SESSION_ALREADY_FINISHED)."
+          },
+          "401": { "description": "Unauthorized. Missing or invalid token." },
+          "404": { "description": "SESSION_NOT_FOUND." },
+          "500": {
+            "description": "SESSION_FINISH_FAILED or Internal Server Error."
+          }
+        }
+      }
+    },
+    "/task-notebook-session/student/{studentId}": {
+      "get": {
+        "tags": ["Task Notebook Session (Student/Educator)"],
+        "summary": "Lists all Task Notebook sessions associated with a specific student.",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "schema": { "type": "string", "format": "uuid" },
+            "required": true,
+            "description": "The ID of the student whose sessions are being requested."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of task notebook sessions returned successfully. Returns an empty array if none are found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaskNotebookSession"
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid studentId format." },
+          "401": { "description": "Unauthorized. Missing or invalid token." }
+        }
+      }
+    },
+    "/task-notebook-session/report/{sessionId}": {
+      "get": {
+        "tags": ["Task Notebook Session (Student/Educator)"],
+        "summary": "Generates a comprehensive performance report for a completed session.",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "schema": { "type": "string", "format": "uuid" },
+            "required": true,
+            "description": "The ID of the Task Notebook session for which the report is requested."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Report generated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskNotebookSessionReport"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid sessionId format or SESSION_NOT_FINISHED."
+          },
+          "401": { "description": "Unauthorized. Missing or invalid token." },
+          "404": { "description": "SESSION_NOT_FOUND." },
+          "500": { "description": "Internal Server Error." }
         }
       }
     },
@@ -260,17 +468,44 @@
         "summary": "Lists and filters tasks created by the educator.",
         "security": [{ "BearerAuth": [] }],
         "parameters": [
-          { "name": "id", "in": "query", "schema": { "type": "string", "format": "uuid" }, "required": false, "description": "Filter by specific Task ID." },
-          { "name": "category", "in": "query", "schema": { "type": "string" }, "required": false, "description": "Filter by category." },
-          { "name": "type", "in": "query", "schema": { "type": "string" }, "required": false, "description": "Filter by task type." },
-          { "name": "promptContains", "in": "query", "schema": { "type": "string" }, "required": false, "description": "Filter by text contained in the prompt." }
+          {
+            "name": "id",
+            "in": "query",
+            "schema": { "type": "string", "format": "uuid" },
+            "required": false,
+            "description": "Filter by specific Task ID."
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "schema": { "type": "string" },
+            "required": false,
+            "description": "Filter by category."
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": { "type": "string" },
+            "required": false,
+            "description": "Filter by task type."
+          },
+          {
+            "name": "promptContains",
+            "in": "query",
+            "schema": { "type": "string" },
+            "required": false,
+            "description": "Filter by text contained in the prompt."
+          }
         ],
         "responses": {
           "200": {
             "description": "List of tasks returned successfully.",
             "content": {
               "application/json": {
-                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Task" } }
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Task" }
+                }
               }
             }
           },
@@ -306,7 +541,7 @@
         }
       }
     },
-    "/task/delete/{id}": { 
+    "/task/delete/{id}": {
       "delete": {
         "tags": ["Task Management (Educator Only)"],
         "summary": "Deletes a Task by its ID.",
@@ -354,28 +589,98 @@
           "housenumber": { "type": "string" },
           "phonenumber": { "type": "string" },
           "learningTopics": { "type": "array", "items": { "type": "string" } },
-          "educatorId": { "type": "string", "format": "uuid", "nullable": true, "description": "ID of the assigned educator." }
+          "educatorId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "ID of the assigned educator."
+          }
         }
       },
       "TaskAlternative": {
         "type": "object",
         "properties": {
-          "text": { "type": "string", "minLength": 1, "description": "The text content of the alternative." },
-          "isCorrect": { "type": "boolean", "description": "Flag indicating if this alternative is the correct answer." }
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The text content of the alternative."
+          },
+          "isCorrect": {
+            "type": "boolean",
+            "description": "Flag indicating if this alternative is the correct answer."
+          }
         },
         "required": ["text", "isCorrect"]
+      },
+      "TaskAnswer": {
+        "type": "object",
+        "description": "Represents a student's recorded answer for a single task.",
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the answered task."
+          },
+          "selectedAlternativeId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the alternative selected by the student."
+          },
+          "isCorrect": {
+            "type": "boolean",
+            "description": "Indicates if the selected alternative was correct."
+          },
+          "timeToAnswer": {
+            "type": "number",
+            "format": "float",
+            "description": "Time spent answering the task, in seconds."
+          },
+          "answeredAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of the answer submission."
+          }
+        },
+        "required": [
+          "taskId",
+          "selectedAlternativeId",
+          "isCorrect",
+          "timeToAnswer",
+          "answeredAt"
+        ]
       },
       "Task": {
         "type": "object",
         "description": "Model for a single quiz/assessment task.",
         "properties": {
           "id": { "type": "string", "format": "uuid" },
-          "category": { "type": "string", "description": "The category of the task (e.g., Mathematics, History)." },
-          "type": { "type": "string", "description": "The type of task (e.g., MultipleChoice, TrueOrFalse)." },
-          "prompt": { "type": "string", "description": "The question or statement for the task." },
-          "alternatives": { "type": "array", "items": { "$ref": "#/components/schemas/TaskAlternative" }, "minItems": 2 },
-          "imageFile": { "type": "string", "nullable": true, "description": "URL or path to an associated image file." },
-          "audioFile": { "type": "string", "nullable": true, "description": "URL or path to an associated audio file." }
+          "category": {
+            "type": "string",
+            "description": "The category of the task (e.g., Mathematics, History)."
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of task (e.g., MultipleChoice, TrueOrFalse)."
+          },
+          "prompt": {
+            "type": "string",
+            "description": "The question or statement for the task."
+          },
+          "alternatives": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/TaskAlternative" },
+            "minItems": 2
+          },
+          "imageFile": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL or path to an associated image file."
+          },
+          "audioFile": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL or path to an associated audio file."
+          }
         }
       },
       "TaskNotebook": {
@@ -386,8 +691,113 @@
           "educatorId": { "type": "string", "format": "uuid" },
           "category": { "type": "string" },
           "description": { "type": "string" },
-          "tasks": { "type": "array", "items": { "type": "string", "format": "uuid" }, "description": "List of Task IDs." }
+          "tasks": {
+            "type": "array",
+            "items": { "type": "string", "format": "uuid" },
+            "description": "List of Task IDs."
+          }
         }
+      },
+      "TaskNotebookSession": {
+        "type": "object",
+        "description": "The active Task Notebook session model.",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique ID for the session."
+          },
+          "studentId": { "type": "string", "format": "uuid" },
+          "notebookId": { "type": "string", "format": "uuid" },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the session started."
+          },
+          "finishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Timestamp when the session finished, null if still active."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["IN_PROGRESS", "COMPLETED", "EXPIRED"],
+            "description": "Current status of the session."
+          },
+          "answers": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/TaskAnswer" },
+            "description": "List of recorded answers for the tasks in the notebook."
+          }
+        },
+        "required": [
+          "sessionId",
+          "studentId",
+          "notebookId",
+          "startedAt",
+          "status",
+          "answers"
+        ]
+      },
+      "TaskNotebookSessionReport": {
+        "type": "object",
+        "description": "Comprehensive performance metrics for a Task Notebook Session.",
+        "properties": {
+          "totalTimeSession": {
+            "type": "number",
+            "format": "float",
+            "description": "Total time spent in the session, in seconds."
+          },
+          "totalQuestions": {
+            "type": "integer",
+            "description": "Total number of questions answered."
+          },
+          "averageTimePerQuestion": {
+            "type": "number",
+            "format": "float",
+            "description": "Average time spent per question (seconds)."
+          },
+          "averageCorrectTime": {
+            "type": "number",
+            "format": "float",
+            "nullable": true,
+            "description": "Average time spent on correct answers (seconds). Null if no correct answers."
+          },
+          "averageIncorrectTime": {
+            "type": "number",
+            "format": "float",
+            "nullable": true,
+            "description": "Average time spent on incorrect answers (seconds). Null if no incorrect answers."
+          },
+          "percentageByCategory": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "format": "float",
+              "nullable": true,
+              "description": "Percentage of correct answers for a given category (0-100)."
+            },
+            "description": "Performance percentage grouped by question category."
+          },
+          "percentageByType": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "format": "float",
+              "nullable": true,
+              "description": "Percentage of correct answers for a given question type (0-100)."
+            },
+            "description": "Performance percentage grouped by question type."
+          }
+        },
+        "required": [
+          "totalTimeSession",
+          "totalQuestions",
+          "averageTimePerQuestion",
+          "percentageByCategory",
+          "percentageByType"
+        ]
       },
       "AuthSuccessResponse": {
         "type": "object",
@@ -402,9 +812,23 @@
         "type": "object",
         "description": "Required data for new Educator registration.",
         "properties": {
-          "name": { "type": "string", "description": "Educator's full name.", "minLength": 3, "maxLength": 100 },
-          "email": { "type": "string", "format": "email", "description": "Valid email for access." },
-          "password": { "type": "string", "description": "Account password.", "minLength": 6, "maxLength": 100 }
+          "name": {
+            "type": "string",
+            "description": "Educator's full name.",
+            "minLength": 3,
+            "maxLength": 100
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Valid email for access."
+          },
+          "password": {
+            "type": "string",
+            "description": "Account password.",
+            "minLength": 6,
+            "maxLength": 100
+          }
         },
         "required": ["name", "email", "password"]
       },
@@ -412,8 +836,17 @@
         "type": "object",
         "description": "Credentials for Educator login.",
         "properties": {
-          "email": { "type": "string", "format": "email", "description": "Educator's email." },
-          "password": { "type": "string", "description": "Educator's password.", "minLength": 6, "maxLength": 100 }
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Educator's email."
+          },
+          "password": {
+            "type": "string",
+            "description": "Educator's password.",
+            "minLength": 6,
+            "maxLength": 100
+          }
         },
         "required": ["email", "password"]
       },
@@ -421,8 +854,17 @@
         "type": "object",
         "description": "Data for password update.",
         "properties": {
-          "email": { "type": "string", "format": "email", "description": "Educator's email." },
-          "newPassword": { "type": "string", "description": "New desired password.", "minLength": 6, "maxLength": 100 }
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Educator's email."
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "New desired password.",
+            "minLength": 6,
+            "maxLength": 100
+          }
         },
         "required": ["email", "newPassword"]
       },
@@ -430,7 +872,11 @@
         "type": "object",
         "description": "Email to which the recovery/authentication token should be sent.",
         "properties": {
-          "educatorEmail": { "type": "string", "format": "email", "description": "Educator's email." }
+          "educatorEmail": {
+            "type": "string",
+            "format": "email",
+            "description": "Educator's email."
+          }
         },
         "required": ["educatorEmail"]
       },
@@ -440,25 +886,45 @@
         "properties": {
           "name": { "type": "string", "minLength": 1, "maxLength": 100 },
           "age": { "type": "integer", "minimum": 1, "maximum": 50 },
-          "gender": { "type": "string", "description": "Student's gender (e.g., Male, Female, Other)." },
+          "gender": {
+            "type": "string",
+            "description": "Student's gender (e.g., Male, Female, Other)."
+          },
           "zipcode": { "type": "string", "minLength": 5, "maxLength": 10 },
           "road": { "type": "string", "minLength": 1, "maxLength": 100 },
           "housenumber": { "type": "string", "minLength": 1, "maxLength": 10 },
           "phonenumber": { "type": "string", "minLength": 7, "maxLength": 15 },
-          "learningTopics": { 
-            "type": "array", 
+          "learningTopics": {
+            "type": "array",
             "items": { "type": "string", "minLength": 1, "maxLength": 50 },
             "minItems": 1
           }
         },
-        "required": ["name", "age", "gender", "zipcode", "road", "housenumber", "phonenumber", "learningTopics"]
+        "required": [
+          "name",
+          "age",
+          "gender",
+          "zipcode",
+          "road",
+          "housenumber",
+          "phonenumber",
+          "learningTopics"
+        ]
       },
       "AssignEducatorBody": {
         "type": "object",
         "description": "Body to assign a student to a new educator.",
         "properties": {
-          "studentId": { "type": "string", "format": "uuid", "description": "The ID of the student to be assigned." },
-          "newEducatorEmail": { "type": "string", "format": "email", "description": "Email of the new educator to be assigned." }
+          "studentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the student to be assigned."
+          },
+          "newEducatorEmail": {
+            "type": "string",
+            "format": "email",
+            "description": "Email of the new educator to be assigned."
+          }
         },
         "required": ["studentId", "newEducatorEmail"]
       },
@@ -476,15 +942,89 @@
         },
         "required": ["tasks", "category", "description"]
       },
+      "StartTaskNotebookSessionBody": {
+        "type": "object",
+        "description": "Required IDs to start a new Task Notebook session.",
+        "properties": {
+          "studentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the student the session is for."
+          },
+          "notebookId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the Task Notebook to be used."
+          }
+        },
+        "required": ["studentId", "notebookId"]
+      },
+      "AnswerTaskNotebookSessionBody": {
+        "type": "object",
+        "description": "Data required to submit an answer during an active session.",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the active session."
+          },
+          "taskId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the task being answered."
+          },
+          "selectedAlternativeId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the alternative selected by the user."
+          },
+          "timeToAnswer": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "description": "Time spent answering the task, in seconds."
+          }
+        },
+        "required": [
+          "sessionId",
+          "taskId",
+          "selectedAlternativeId",
+          "timeToAnswer"
+        ]
+      },
+      "FinishTaskNotebookSessionBody": {
+        "type": "object",
+        "description": "Data required to explicitly finish an active session.",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the active session to be finished."
+          }
+        },
+        "required": ["sessionId"]
+      },
       "TaskCreationBody": {
         "type": "object",
         "properties": {
           "category": { "type": "string" },
           "type": { "type": "string" },
           "prompt": { "type": "string", "minLength": 1 },
-          "alternatives": { "type": "array", "items": { "$ref": "#/components/schemas/TaskAlternative" }, "minItems": 2 },
-          "imageFile": { "type": "string", "nullable": true, "description": "Optional image file path." },
-          "audioFile": { "type": "string", "nullable": true, "description": "Optional audio file path." }
+          "alternatives": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/TaskAlternative" },
+            "minItems": 2
+          },
+          "imageFile": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional image file path."
+          },
+          "audioFile": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional audio file path."
+          }
         },
         "required": ["category", "type", "prompt", "alternatives"]
       },
@@ -495,7 +1035,11 @@
           "category": { "type": "string", "nullable": true },
           "type": { "type": "string", "nullable": true },
           "prompt": { "type": "string", "minLength": 1, "nullable": true },
-          "alternatives": { "type": "array", "items": { "$ref": "#/components/schemas/TaskAlternative" }, "nullable": true },
+          "alternatives": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/TaskAlternative" },
+            "nullable": true
+          },
           "imageFile": { "type": "string", "nullable": true },
           "audioFile": { "type": "string", "nullable": true }
         },
