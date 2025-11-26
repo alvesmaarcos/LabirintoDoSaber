@@ -38,6 +38,6 @@ export class CreateStudentController extends BaseController {
       return this.fail(res, result.error);
     }
 
-    return this.created(res);
+    return this.created(res, result.value);
   }
 }

@@ -40,6 +40,7 @@ export class CreateStudentUseCase {
       phonenumber: request.phonenumber,
       learningTopics: request.learningTopics,
       educators: [educatorExists],
+      educatorId: educatorExists.id,
     });
 
     await this.studentRepository.save(student);

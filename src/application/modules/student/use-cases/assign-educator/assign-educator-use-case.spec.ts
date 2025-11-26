@@ -49,6 +49,7 @@ describe("AssignEducatorUseCase", () => {
       phonenumber: "1234567890",
       learningTopics: ["Math"],
       educators: [currentEducator],
+      educatorId: currentEducator.id,
     });
 
     studentRepository.save(student);

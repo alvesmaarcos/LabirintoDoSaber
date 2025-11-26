@@ -19,11 +19,13 @@ export class StudentRepositoryImpl implements StudentRepository {
         gender: this.mapGender(student.gender),
         zipcode: student.zipcode,
         road: student.road,
+        educatorId: student.educatorId.value,
         housenumber: student.housenumber,
         phonenumber: student.phonenumber,
         learningTopics: student.learningTopics,
       },
       create: {
+        educatorId: student.educatorId.value,
         id: student.id.value,
         name: student.name,
         age: student.age,
@@ -120,6 +122,7 @@ export class StudentRepositoryImpl implements StudentRepository {
       learningTopics: prismaStudent.learningTopics,
       createdAt: prismaStudent.createdAt,
       educators,
+      educatorId: new Uuid(prismaStudent.educatorId),
     });
   }
 

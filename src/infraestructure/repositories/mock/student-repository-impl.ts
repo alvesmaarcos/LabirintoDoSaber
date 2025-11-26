@@ -35,6 +35,7 @@ export class MockStudentRepository implements StudentRepository {
       learningTopics: [...student.learningTopics],
       createdAt: student.createdAt,
       educators: [...student.educators],
+      educatorId: student.educatorId,
     });
   }
 
