@@ -69,6 +69,7 @@ export class StudentRepositoryImpl implements StudentRepository {
   async search(params: SearchStudentProps): Promise<Student[]> {
     const prismaStudents = await this.prismaService.student.findMany({
       where: {
+        educatorId: params.educatorId?.value,
         id: params.id?.value,
         name: params.name
           ? { contains: params.name, mode: "insensitive" }
