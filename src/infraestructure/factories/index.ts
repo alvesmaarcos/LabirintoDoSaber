@@ -12,6 +12,7 @@ import { TaskRepositoryImpl } from "../repositories/prisma/task-repository-impl"
 import { TaskNotebokSessionRepositoryImpl } from "../repositories/prisma/task-notebook-session-repository-impl";
 import { TaskNotebookRepository } from "../../domain/repositories/task-notebook-repository";
 import { TaskNotebookSessionRepository } from "../../domain/repositories/task-notebook-session-repository";
+import { TaskGroupRepositoryImpl } from "../repositories/prisma/task-group-repository-impl";
 
 const prismaClient = new PrismaClient();
 
@@ -58,3 +59,7 @@ export const makeTaskNotebookSessionRepository =
   (): TaskNotebookSessionRepository => {
     return new TaskNotebokSessionRepositoryImpl(prismaClient);
   };
+
+export const makeTaskGroupRepository = () => {
+  return new TaskGroupRepositoryImpl(prismaClient);
+};

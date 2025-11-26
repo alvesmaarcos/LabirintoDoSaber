@@ -115,6 +115,14 @@ model TaskNotebookSession {
   answers    TaskAnswer[]
 }
 
+model TaskGroup {
+  id          String   @id @map("_id")
+  name        String
+  educatorId  String
+  taskIds     String[]
+  category    TaskCategory
+}
+
 type TaskAnswer {
   taskId               String   
   selectedAlternativeId String   
