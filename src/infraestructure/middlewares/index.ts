@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { Uuid } from "@wave-telecom/framework/core";
 import { EducatorRepository } from "../../domain/repositories/educator-repository";
 import { JwtAuthService } from "../services/auth-service-impl";
+import multer from "multer";
 
 const authService = new JwtAuthService();
 
@@ -36,3 +37,21 @@ export function makeAuthMiddleware(educatorRepository: EducatorRepository) {
     next();
   };
 }
+
+export const multerErrorHandlerMiddleware = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      return res.status(400).json({
+        message: "THIS FILE IS TO LARGE",
+      });
+    }
+  }
+
+  next(err);
+};
