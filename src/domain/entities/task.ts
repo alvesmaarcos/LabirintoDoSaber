@@ -1,10 +1,10 @@
 import { failure, success, Uuid } from "@wave-telecom/framework/core";
 
 export enum TaskCategory {
-  Reading,
-  Writing,
-  Vocabulary,
-  Comprehension,
+  Reading = "reading",
+  Writing = "writing",
+  Vocabulary = "vocabulary",
+  Comprehension = "comprehension",
 }
 
 export enum TaskType {

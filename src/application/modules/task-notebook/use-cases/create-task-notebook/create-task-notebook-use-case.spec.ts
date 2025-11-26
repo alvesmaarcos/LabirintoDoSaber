@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Uuid, failure } from "@wave-telecom/framework/core";
 import { TaskNotebookCategory } from "../../../../../domain/entities/task-notebook";
-import { Task } from "../../../../../domain/entities/task";
+import { Task, TaskCategory } from "../../../../../domain/entities/task";
 import { CreateTaskNotebookUseCase } from "./create-task-notebook-use-case";
 
 const mockEducatorRepository = { getByEmail: vi.fn() };
@@ -26,7 +26,7 @@ const mockEducator = {
 };
 
 const mockTaskResult = Task.create({
-  category: 0,
+  category: TaskCategory.Reading,
   type: 0,
   prompt: "Qual é a capital da França?",
   alternatives: [
