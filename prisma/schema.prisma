@@ -72,6 +72,7 @@ model TaskNotebook {
   tasks       Task[]
   category    TaskNotebookCategory
   description String
+  taskGroupsIds String[]
   createdAt   DateTime             
 }
 

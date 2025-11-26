@@ -12,6 +12,7 @@ export interface CreateTaskNotebookRequest {
   tasks: string[];
   category: TaskNotebookCategory;
   description: string;
+  taskGroupsIds?: string[];
 }
 
 export class CreateTaskNotebookUseCase {
@@ -46,6 +47,7 @@ export class CreateTaskNotebookUseCase {
       description: props.description,
       category: props.category,
       tasks: existingTasks,
+      taskGroupsIds: props.taskGroupsIds,
     });
 
     if (!taskNotebookResult.ok) {

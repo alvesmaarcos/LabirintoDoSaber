@@ -6,6 +6,7 @@ import { ListTasksNotebooksUseCase } from "../use-cases/list-tasks-notebooks/lis
 import { ListTasksNotebooksController } from "../use-cases/list-tasks-notebooks/list-tasks-notebooks-controller";
 import {
   makeEducatorRepository,
+  makeTaskGroupRepository,
   makeTaskNotebookRepository,
   makeTaskRepository,
 } from "../../../../infraestructure/factories";
@@ -15,6 +16,7 @@ const taskNotebookRouter = Router();
 const educatorRepository = makeEducatorRepository({ isMock: false });
 const taskRepository = makeTaskRepository({ isMock: false });
 const taskNotebookRepository = makeTaskNotebookRepository({ isMock: false });
+const taskGroupRepository = makeTaskGroupRepository();
 
 const createTaskNotebookUseCase = new CreateTaskNotebookUseCase(
   taskNotebookRepository,
@@ -23,7 +25,8 @@ const createTaskNotebookUseCase = new CreateTaskNotebookUseCase(
 );
 
 const listTasksNotebooksUseCase = new ListTasksNotebooksUseCase(
-  taskNotebookRepository
+  taskNotebookRepository,
+  taskGroupRepository
 );
 
 const authMiddleware = makeAuthMiddleware(educatorRepository);

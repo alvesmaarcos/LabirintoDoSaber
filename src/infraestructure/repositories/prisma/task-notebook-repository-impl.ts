@@ -22,6 +22,7 @@ export class TaskNotebookRepositoryImpl implements TaskNotebookRepository {
     const prismaNotebook = await this.prismaService.taskNotebook.upsert({
       where: { id: taskNotebook.id.value },
       update: {
+        taskGroupsIds: taskNotebook.taskGroupsIds,
         educatorId: taskNotebook.educator.id.value,
         category: this.mapCategory(taskNotebook.category),
         description: taskNotebook.description,
@@ -37,6 +38,7 @@ export class TaskNotebookRepositoryImpl implements TaskNotebookRepository {
         category: this.mapCategory(taskNotebook.category),
         description: taskNotebook.description,
         createdAt: taskNotebook.createdAt,
+        taskGroupsIds: taskNotebook.taskGroupsIds,
         tasks: {
           connect: taskNotebook.tasks.map((task) => ({
             id: task.id.value,
@@ -139,6 +141,7 @@ export class TaskNotebookRepositoryImpl implements TaskNotebookRepository {
       category: this.mapCategoryFromPrisma(prismaNotebook.category),
       description: prismaNotebook.description,
       createdAt: prismaNotebook.createdAt,
+      taskGroupsIds: prismaNotebook.taskGroupsIds,
     });
 
     if (!result.ok)

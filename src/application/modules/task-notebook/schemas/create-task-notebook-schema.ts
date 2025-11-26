@@ -7,4 +7,7 @@ export const CreateTaskNotebookSchema = z.object({
     .min(1, "at least one task is required"),
   category: z.nativeEnum(TaskNotebookCategory),
   description: z.string().min(1, "description is required"),
+  taskGroupsIds: z
+    .array(z.string().uuid("each task group ID must be a valid UUID"))
+    .optional(),
 });

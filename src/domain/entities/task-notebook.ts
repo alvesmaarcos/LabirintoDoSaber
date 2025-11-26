@@ -16,6 +16,7 @@ export interface CreateTaskNotebookProps {
   category: TaskNotebookCategory;
   createdAt?: Date;
   description: string;
+  taskGroupsIds?: string[];
 }
 
 export class TaskNotebook {
@@ -25,7 +26,8 @@ export class TaskNotebook {
     public readonly tasks: Task[],
     public readonly category: TaskNotebookCategory,
     public readonly description: string,
-    public readonly createdAt: Date
+    public readonly createdAt: Date,
+    public readonly taskGroupsIds: string[]
   ) {}
 
   static create(props: CreateTaskNotebookProps) {
@@ -36,7 +38,8 @@ export class TaskNotebook {
         props.tasks || [],
         props.category,
         props.description,
-        props.createdAt || new Date()
+        props.createdAt || new Date(),
+        props.taskGroupsIds || []
       );
       return success(notebook);
     } catch (error) {
@@ -57,7 +60,8 @@ export class TaskNotebook {
       updatedTasks,
       TaskNotebookCategory.Comprehension,
       this.description,
-      this.createdAt
+      this.createdAt,
+      this.taskGroupsIds
     );
 
     return success(updatedNotebook);
