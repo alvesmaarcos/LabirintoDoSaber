@@ -4,6 +4,8 @@ import { CreateTaskNotebookUseCase } from "../use-cases/create-task-notebook/cre
 import { CreateTaskNotebookController } from "../use-cases/create-task-notebook/create-task-notebook-controller";
 import { ListTasksNotebooksUseCase } from "../use-cases/list-tasks-notebooks/list-tasks-notebooks-use-case";
 import { ListTasksNotebooksController } from "../use-cases/list-tasks-notebooks/list-tasks-notebooks-controller";
+import { DeleteTaskNotebookUseCase } from "../use-cases/delete-task-notebook/delete-task-notebook-use-case";
+import { DeleteTaskNotebookController } from "../use-cases/delete-task-notebook/delete-task-notebook-controller";
 import {
   makeEducatorRepository,
   makeTaskGroupRepository,
@@ -29,6 +31,10 @@ const listTasksNotebooksUseCase = new ListTasksNotebooksUseCase(
   taskGroupRepository
 );
 
+const deleteTaskNotebookUseCase = new DeleteTaskNotebookUseCase(
+  taskNotebookRepository
+);
+
 const authMiddleware = makeAuthMiddleware(educatorRepository);
 
 taskNotebookRouter.use(authMiddleware);
@@ -39,6 +45,10 @@ taskNotebookRouter.post("/create", async (req: Request, res: Response) => {
 
 taskNotebookRouter.get("/", async (req: Request, res: Response) => {
   new ListTasksNotebooksController(listTasksNotebooksUseCase).execute(req, res);
+});
+
+taskNotebookRouter.delete("/delete/:taskNotebookId", async (req: Request, res: Response) => {
+  new DeleteTaskNotebookController(deleteTaskNotebookUseCase).execute(req, res);
 });
 
 export { taskNotebookRouter };
