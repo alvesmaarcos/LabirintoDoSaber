@@ -21,6 +21,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  console.log(`API docs available at http://localhost:${port}/api-docs`);
 });
 
 module.exports = app;

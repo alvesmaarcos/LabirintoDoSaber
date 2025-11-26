@@ -17,6 +17,8 @@ import { ListTaskNotebookSessionByStudentIdUseCase } from "../use-cases/list-tas
 import { ListTaskNotebookSessionByStudentIdController } from "../use-cases/list-task-notebook-session-by-student-id/list-task-notebook-session-by-student-id-controller";
 import { GeneratorReportTaskNotebookSessionUseCase } from "../use-cases/generator-report-task-notebook-session/generator-report-task-notebook-session-use-case";
 import { GeneratorReportTaskNotebookSessionController } from "../use-cases/generator-report-task-notebook-session/generator-report-task-notebook-session-controller";
+import { GenerateStudentAnalysisUseCase } from "../use-cases/generate-student-analisys/generate-student-analisys-use-case";
+import { GenerateStudentAnalysisController } from "../use-cases/generate-student-analisys/generate-student-analisys-controller";
 
 const taskNotebookSessionRouter = Router();
 
@@ -51,6 +53,12 @@ const generateReportTaskNotebookSessionUseCase =
     taskSessionRepository,
     taskRepository
   );
+
+const generateStudentAnalisysUseCase = new GenerateStudentAnalysisUseCase(
+  studentRepository,
+  taskSessionRepository,
+  taskRepository
+);
 
 taskNotebookSessionRouter.use(authMiddleware);
 
@@ -87,6 +95,15 @@ taskNotebookSessionRouter.get(
   (req: Request, res: Response) => {
     new GeneratorReportTaskNotebookSessionController(
       generateReportTaskNotebookSessionUseCase
+    ).execute(req, res);
+  }
+);
+
+taskNotebookSessionRouter.get(
+  "/analysis/student/:studentId",
+  (req: Request, res: Response) => {
+    new GenerateStudentAnalysisController(
+      generateStudentAnalisysUseCase
     ).execute(req, res);
   }
 );
