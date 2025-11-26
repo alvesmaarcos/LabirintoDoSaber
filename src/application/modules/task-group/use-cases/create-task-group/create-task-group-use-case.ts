@@ -26,21 +26,6 @@ export class CreateTaskGroupUseCase {
       return failure("EDUCATOR_NOT_FOUND");
     }
 
-    const allTasksExists = request.tasksId
-      ? await Promise.all(
-          request.tasksId.map(async (taskId) => {
-            const task = await this.taskGroupRepository.findById(
-              new Uuid(taskId)
-            );
-            return !!task;
-          })
-        )
-      : undefined;
-
-    if (allTasksExists?.includes(false)) {
-      return failure("TASK_NOT_FOUND");
-    }
-
     const taskGroup = TaskGroup.create({
       name: request.name,
       tasksId: request.tasksId,
