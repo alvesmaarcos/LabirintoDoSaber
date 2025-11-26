@@ -14,7 +14,7 @@ export class DeleteTaskNotebookUseCase {
                 return failure("TASK_NOTEBOOK_ID_REQUIRED");
             }
 
-            const idAsString = String(params.taskNotebookId);
+            const idAsString = params.taskNotebookId.value;
             if (!Uuid.isValid(idAsString)) {
                 return failure("INVALID_TASK_NOTEBOOK_ID");
             }
