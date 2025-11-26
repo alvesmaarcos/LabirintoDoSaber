@@ -3,8 +3,24 @@ import { TaskRepository } from "../../../../../domain/repositories/task-reposito
 import { TaskCategory, TaskType } from "../../../../../domain/entities/task";
 import { CreateTaskUseCase } from "./create-task-use-case";
 import { success, failure } from "@wave-telecom/framework/core";
+import { FileStorage } from "../../../../services/file-storage";
 
 // Mock do repositório
+
+const mockFileStorage = () =>
+  ({
+    saveFile: vi.fn().mockResolvedValue({ url: "http://mockurl.com/file" }),
+  } as any);
+
+const mockImageFile: Express.Multer.File = {
+  fieldname: "imageFile",
+  originalname: "image.png",
+  encoding: "7bit",
+  mimetype: "image/png",
+  buffer: Buffer.from("fake image buffer"),
+  size: 1234,
+} as any;
+
 const mockTaskRepository = (): TaskRepository => {
   return {
     save: vi.fn(),
@@ -17,10 +33,11 @@ const mockTaskRepository = (): TaskRepository => {
 describe("CreateTaskUseCase", () => {
   let taskRepository: TaskRepository;
   let useCase: CreateTaskUseCase;
-
+  let fileStorage: FileStorage;
   beforeEach(() => {
     taskRepository = mockTaskRepository();
-    useCase = new CreateTaskUseCase(taskRepository);
+    fileStorage = mockFileStorage();
+    useCase = new CreateTaskUseCase(taskRepository, fileStorage);
   });
 
   it("should fail if MultipleChoice task has media", async () => {
@@ -32,7 +49,7 @@ describe("CreateTaskUseCase", () => {
         { text: "Paris", isCorrect: true },
         { text: "Londres", isCorrect: false },
       ],
-      imageFile: "image.png",
+      imageFile: mockImageFile,
     });
 
     expect(result).toEqual(failure("TEXT_TASK_CANNOT_HAVE_MEDIA"));
@@ -98,7 +115,7 @@ describe("CreateTaskUseCase", () => {
         { text: "Paris", isCorrect: true },
         { text: "Londres", isCorrect: false },
       ],
-      imageFile: "image.png",
+      imageFile: mockImageFile,
     };
 
     const result = await useCase.execute(payload);
@@ -108,6 +125,6 @@ describe("CreateTaskUseCase", () => {
     const savedTask = (taskRepository.save as any).mock.calls[0][0];
     expect(savedTask.prompt).toBe(payload.prompt);
     expect(savedTask.type).toBe(payload.type);
-    expect(savedTask.imageFile).toBe(payload.imageFile);
+    expect(savedTask.imageFile).toBe("http://mockurl.com/file");
   });
 });

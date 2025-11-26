@@ -10,14 +10,17 @@ import { DeleteTaskUseCase } from "../use-cases/delete-task/delete-task-use-case
 import { DeleteTaskController } from "../use-cases/delete-task/delete-task-controller";
 import {
   makeEducatorRepository,
+  makeFileStorage,
   makeTaskRepository,
 } from "../../../../infraestructure/factories";
+import { Multer } from "../../../../infraestructure/upload/multer-config";
 
 const taskRouter = Router();
 
 const taskRepository = makeTaskRepository({ isMock: false });
+const fileStorage = makeFileStorage();
 
-const createTaskUseCase = new CreateTaskUseCase(taskRepository);
+const createTaskUseCase = new CreateTaskUseCase(taskRepository, fileStorage);
 
 const listTasksUseCase = new ListTasksUseCase(taskRepository);
 
@@ -31,9 +34,16 @@ const authMiddleware = makeAuthMiddleware(educatorRepository);
 
 taskRouter.use(authMiddleware);
 
-taskRouter.post("/create", (req: Request, res: Response) => {
-  new CreateTaskController(createTaskUseCase).execute(req, res);
-});
+taskRouter.post(
+  "/create",
+  Multer.getUploader(10).fields([
+    { name: "imageFile", maxCount: 1 },
+    { name: "audioFile", maxCount: 1 },
+  ]),
+  (req: Request, res: Response) => {
+    return new CreateTaskController(createTaskUseCase).execute(req, res);
+  }
+);
 
 taskRouter.get("/", (req: Request, res: Response) => {
   new ListTasksController(listTasksUseCase).execute(req, res);

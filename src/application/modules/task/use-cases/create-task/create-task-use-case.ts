@@ -1,10 +1,11 @@
-import { failure, success } from "@wave-telecom/framework/core";
+import { failure, success, Uuid } from "@wave-telecom/framework/core";
 import { TaskRepository } from "../../../../../domain/repositories/task-repository";
 import {
   Task,
   TaskCategory,
   TaskType,
 } from "../../../../../domain/entities/task";
+import { FileStorage } from "../../../../services/file-storage";
 
 interface CreateTaskUseCaseRequest {
   category: TaskCategory;
@@ -14,12 +15,15 @@ interface CreateTaskUseCaseRequest {
     text: string;
     isCorrect: boolean;
   }[];
-  imageFile?: string;
-  audioFile?: string;
+  imageFile?: Express.Multer.File;
+  audioFile?: Express.Multer.File;
 }
 
 export class CreateTaskUseCase {
-  constructor(private taskRepository: TaskRepository) {}
+  constructor(
+    private taskRepository: TaskRepository,
+    private fileStorage: FileStorage
+  ) {}
 
   async execute(props: CreateTaskUseCaseRequest) {
     if (!Object.values(TaskType).includes(props.type)) {
@@ -47,12 +51,37 @@ export class CreateTaskUseCase {
     if (!hasCorrectAlternative) {
       return failure("AT_LEAST_ONE_ALTERNATIVE_MUST_BE_CORRECT");
     }
+    const id = Uuid.random();
+    let audioUrl: string | undefined;
+    if (props.audioFile) {
+      const audioSaveResult = await this.fileStorage.saveFile({
+        taskId: id.value,
+        file: props.audioFile,
+      });
+      audioUrl = audioSaveResult.url;
+    }
 
-    const taskResult = Task.create(props);
+    let imageUrl: string | undefined;
+    if (props.imageFile) {
+      const imageSaveResult = await this.fileStorage.saveFile({
+        taskId: id.value,
+        file: props.imageFile,
+      });
+      imageUrl = imageSaveResult.url;
+    }
+
+    const taskResult = Task.create({
+      id: id,
+      category: props.category,
+      type: props.type,
+      prompt: props.prompt,
+      alternatives: props.alternatives,
+      audioFile: audioUrl,
+      imageFile: imageUrl,
+    });
     if (!taskResult.ok) {
       return failure("INVALID_TASK_DATA");
     }
-
     const task = taskResult.value;
 
     await this.taskRepository.save(task);

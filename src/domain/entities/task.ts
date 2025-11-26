@@ -30,7 +30,7 @@ export interface CreateTaskProps {
 }
 
 interface UpdateTaskProps {
-  id: string;
+  id?: string;
   category?: TaskCategory;
   type?: TaskType;
   prompt?: string;
