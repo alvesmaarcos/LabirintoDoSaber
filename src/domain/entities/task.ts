@@ -8,8 +8,8 @@ export enum TaskCategory {
 }
 
 export enum TaskType {
-  MultipleChoice,
-  MultipleChoiceWithMedia,
+  MultipleChoice = "multipleChoice",
+  MultipleChoiceWithMedia = "multipleChoiceWithMedia",
 }
 
 export interface TaskAlternative {

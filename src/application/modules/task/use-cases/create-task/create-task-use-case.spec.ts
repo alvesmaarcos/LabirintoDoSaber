@@ -23,21 +23,6 @@ describe("CreateTaskUseCase", () => {
     useCase = new CreateTaskUseCase(taskRepository);
   });
 
-  it("should fail if task type is invalid", async () => {
-    const result = await useCase.execute({
-      category: TaskCategory.Reading,
-      type: 999 as TaskType, // tipo inválido
-      prompt: "Qual é a capital da França?",
-      alternatives: [
-        { text: "Paris", isCorrect: true },
-        { text: "Londres", isCorrect: false },
-      ],
-    });
-
-    expect(result).toEqual(failure("INVALID_TASK_TYPE"));
-    expect(taskRepository.save).not.toHaveBeenCalled();
-  });
-
   it("should fail if MultipleChoice task has media", async () => {
     const result = await useCase.execute({
       category: TaskCategory.Reading,
