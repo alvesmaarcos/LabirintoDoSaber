@@ -3,10 +3,10 @@ import { Task } from "./task";
 import { Educator } from "./educator";
 
 export enum TaskNotebookCategory {
-  Reading,
-  Writing,
-  Vocabulary,
-  Comprehension,
+  Reading = "reading",
+  Writing = "writing",
+  Vocabulary = "vocabulary",
+  Comprehension = "comprehension",
 }
 
 export interface CreateTaskNotebookProps {
