@@ -19,21 +19,24 @@ export class ListTasksNotebooksUseCase {
   async execute(params: ListTasksNotebooksUseCaseRequest) {
     try {
       const notebooks = await this.taskNotebookRepository.search(params);
-      const result = notebooks.map(async (notebook) => {
-        const groups = notebook.taskGroupsIds;
-        const taskGroups = await Promise.all(
-          groups.map(async (groupId) => {
-            const group = await this.taskGroupRepository.findById(
-              new Uuid(groupId)
-            );
-            return group;
-          })
-        );
-        return {
-          notebook: notebook,
-          taskGroups: taskGroups.filter((g) => g !== null),
-        };
-      });
+
+      const result = await Promise.all(
+        notebooks.map(async (notebook) => {
+          const groups = notebook.taskGroupsIds;
+
+          const taskGroups = await Promise.all(
+            groups.map(async (groupId) => {
+              return this.taskGroupRepository.findById(new Uuid(groupId));
+            })
+          );
+
+          return {
+            notebook,
+            taskGroups: taskGroups.filter((g) => g !== null),
+          };
+        })
+      );
+
       return success(result);
     } catch {
       return failure("LIST_TASKS_NOTEBOOKS_FAILED");
