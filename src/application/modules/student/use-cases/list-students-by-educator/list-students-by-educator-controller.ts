@@ -9,7 +9,6 @@ export class ListStudentsByEducatorController extends BaseController {
 
   async executeImpl(req: Request, res: Response): Promise<unknown> {
     const educator = req.user;
-
     if (!educator) {
       return this.unauthorized(res, "UNHAUTHORIZED");
     }

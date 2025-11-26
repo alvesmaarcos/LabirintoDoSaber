@@ -79,9 +79,6 @@ export class StudentRepositoryImpl implements StudentRepository {
         learningTopics: params.learningTopics
           ? { hasSome: params.learningTopics }
           : undefined,
-        educatorStudents: params.educatorId
-          ? { some: { educatorId: params.educatorId.value } }
-          : undefined,
       },
       include: {
         educatorStudents: {
@@ -91,7 +88,6 @@ export class StudentRepositoryImpl implements StudentRepository {
         },
       },
     });
-
     return prismaStudents.map((student) => this.mapToEntity(student));
   }
 

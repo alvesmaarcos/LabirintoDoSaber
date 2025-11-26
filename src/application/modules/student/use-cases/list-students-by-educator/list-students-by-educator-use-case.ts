@@ -9,6 +9,8 @@ export class ListStudentsByEducatorUseCase {
   constructor(private studentRepository: StudentRepository) {}
 
   async execute(request: ListStudentsByEducatorRequest) {
-    return this.studentRepository.search({ educatorId: request.educatorId });
+    return await this.studentRepository.search({
+      educatorId: request.educatorId,
+    });
   }
 }
