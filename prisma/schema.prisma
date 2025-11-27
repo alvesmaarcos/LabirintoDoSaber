@@ -110,7 +110,7 @@ enum TaskNotebookCategory {
 model TaskNotebookSession {
   id         String        @id @map("_id")
   studentId  String        
-  notebookId String        
+  name       String        
   startedAt  DateTime
   finishedAt DateTime?
   answers    TaskAnswer[]

@@ -6,7 +6,7 @@ import { TaskNotebookSessionRepository } from "../../../../../domain/repositorie
 
 export interface StartTaskNotebookSessionUseCaseRequest {
   studentId: string;
-  notebookId: string;
+  name: string;
 }
 
 export class StartTaskNotebookSessionUseCase {
@@ -17,10 +17,6 @@ export class StartTaskNotebookSessionUseCase {
   ) {}
 
   async execute(request: StartTaskNotebookSessionUseCaseRequest) {
-    const notebook = await this.notebookRepository.getById(
-      new Uuid(request.notebookId)
-    );
-
     const student = await this.studentRepository.getById(
       new Uuid(request.studentId)
     );
@@ -29,11 +25,7 @@ export class StartTaskNotebookSessionUseCase {
       return failure("STUDENT_NOT_FOUND");
     }
 
-    if (!notebook) {
-      return failure("NOTEBOOK_NOT_FOUND");
-    }
-
-    const session = TaskNotebookSession.start(student.id, notebook.id);
+    const session = TaskNotebookSession.start(student.id, request.name);
 
     if (!session.ok) {
       return failure("SESSION_CREATION_FAILED");

@@ -128,47 +128,6 @@ describe("AnswerTaskNotebookSessionUseCase", () => {
     expect(result).toEqual(failure("TASK_NOT_FOUND"));
   });
 
-  it("should fail if notebook is not found", async () => {
-    const session = makeSession(ID.session, ID.notebook);
-
-    (sessionRepo.getById as any).mockResolvedValue(session);
-    (taskRepo.getById as any).mockResolvedValue(
-      makeTask(ID.task, ID.altCorrect)
-    );
-    (notebookRepo.getById as any).mockResolvedValue(null);
-
-    const result = await useCase.execute({
-      sessionId: ID.session,
-      taskId: ID.task,
-      selectedAlternativeId: ID.altCorrect,
-      timeToAnswer: 10,
-    });
-
-    expect(result).toEqual(failure("NOTEBOOK_NOT_FOUND"));
-  });
-
-  it("should fail if task does not belong to the notebook", async () => {
-    const session = makeSession(ID.session, ID.notebook);
-
-    (sessionRepo.getById as any).mockResolvedValue(session);
-    (taskRepo.getById as any).mockResolvedValue(
-      makeTask(ID.task, ID.altCorrect)
-    );
-
-    (notebookRepo.getById as any).mockResolvedValue(
-      makeNotebook(ID.notebook, []) // no tasks
-    );
-
-    const result = await useCase.execute({
-      sessionId: ID.session,
-      taskId: ID.task,
-      selectedAlternativeId: ID.altCorrect,
-      timeToAnswer: 10,
-    });
-
-    expect(result).toEqual(failure("TASK_NOT_IN_NOTEBOOK"));
-  });
-
   it("should fail if task is already answered", async () => {
     const session = {
       ...makeSession(ID.session, ID.notebook),

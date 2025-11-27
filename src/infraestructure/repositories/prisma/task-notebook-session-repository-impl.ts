@@ -15,7 +15,7 @@ export class TaskNotebokSessionRepositoryImpl
       where: { id: session.id.value },
       create: {
         id: session.id.value,
-        notebookId: session.notebookId.value,
+        name: session.name,
         startedAt: session.startedAt,
         studentId: session.studentId.value,
         finishedAt: session.finishedAt,
@@ -54,7 +54,7 @@ export class TaskNotebokSessionRepositoryImpl
     return new TaskNotebookSession(
       new Uuid(data.id),
       new Uuid(data.studentId),
-      new Uuid(data.notebookId),
+      data.name,
       data.startedAt,
       data.finishedAt ?? undefined,
       data.answers.map((a) => ({

@@ -10,13 +10,13 @@ describe("TaskNotebookSession Entity", () => {
     const studentId = Uuid.random();
     const notebookId = Uuid.random();
 
-    const result = TaskNotebookSession.start(studentId, notebookId);
+    const result = TaskNotebookSession.start(studentId, "name");
 
     expect(result.ok).toBe(true);
     const session = result.ok && "value" in result ? result.value : undefined;
 
     expect(session?.studentId).toBe(studentId);
-    expect(session?.notebookId).toBe(notebookId);
+    expect(session?.name).toBe("name");
     expect(session?.answers.length).toBe(0);
     expect(session?.startedAt).toBeInstanceOf(Date);
     expect(session?.finishedAt).toBeUndefined();
@@ -26,7 +26,7 @@ describe("TaskNotebookSession Entity", () => {
     const studentId = Uuid.random();
     const notebookId = Uuid.random();
 
-    const startResult = TaskNotebookSession.start(studentId, notebookId);
+    const startResult = TaskNotebookSession.start(studentId, "name");
     const session =
       startResult.ok && "value" in startResult ? startResult.value : undefined;
 
@@ -53,7 +53,7 @@ describe("TaskNotebookSession Entity", () => {
     const studentId = Uuid.random();
     const notebookId = Uuid.random();
 
-    const startResult = TaskNotebookSession.start(studentId, notebookId);
+    const startResult = TaskNotebookSession.start(studentId, "name");
     const session =
       startResult.ok && "value" in startResult ? startResult.value : undefined;
 
@@ -79,9 +79,8 @@ describe("TaskNotebookSession Entity", () => {
 
   it("should finish a session successfully", () => {
     const studentId = Uuid.random();
-    const notebookId = Uuid.random();
 
-    const startResult = TaskNotebookSession.start(studentId, notebookId);
+    const startResult = TaskNotebookSession.start(studentId, "name");
     const session =
       startResult.ok && "value" in startResult ? startResult.value : undefined;
 
@@ -100,7 +99,7 @@ describe("TaskNotebookSession Entity", () => {
     const studentId = Uuid.random();
     const notebookId = Uuid.random();
 
-    const startResult = TaskNotebookSession.start(studentId, notebookId);
+    const startResult = TaskNotebookSession.start(studentId, "name");
     const session =
       startResult.ok && "value" in startResult ? startResult.value : undefined;
 

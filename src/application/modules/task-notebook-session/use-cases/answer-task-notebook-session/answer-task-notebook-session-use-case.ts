@@ -39,20 +39,6 @@ export class AnswerTaskNotebookSessionUseCase {
       return failure("TASK_NOT_FOUND");
     }
 
-    const notebook = await this.notebookRepository.getById(session.notebookId);
-
-    if (!notebook) {
-      return failure("NOTEBOOK_NOT_FOUND");
-    }
-
-    const taskBelongsToNotebook = notebook.tasks.some(
-      (t) => t.id.value === task.id.value
-    );
-
-    if (!taskBelongsToNotebook) {
-      return failure("TASK_NOT_IN_NOTEBOOK");
-    }
-
     const alreadyAnswered = session.answers.some(
       (a) => a.taskId.value === task.id.value
     );

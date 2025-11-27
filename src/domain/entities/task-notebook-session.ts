@@ -12,18 +12,18 @@ export class TaskNotebookSession {
   constructor(
     public readonly id: Uuid,
     public readonly studentId: Uuid,
-    public readonly notebookId: Uuid,
+    public readonly name: string,
     public readonly startedAt: Date,
     public readonly finishedAt?: Date,
     public readonly answers: TaskAnswer[] = []
   ) {}
 
-  static start(studentId: Uuid, notebookId: Uuid) {
+  static start(studentId: Uuid, name: string) {
     return success(
       new TaskNotebookSession(
         Uuid.random(),
         studentId,
-        notebookId,
+        name,
         new Date(),
         undefined,
         []
@@ -38,7 +38,7 @@ export class TaskNotebookSession {
     const updated = new TaskNotebookSession(
       this.id,
       this.studentId,
-      this.notebookId,
+      this.name,
       this.startedAt,
       this.finishedAt,
       [...this.answers, answer]
@@ -51,7 +51,7 @@ export class TaskNotebookSession {
       new TaskNotebookSession(
         this.id,
         this.studentId,
-        this.notebookId,
+        this.name,
         this.startedAt,
         new Date(),
         this.answers

@@ -46,23 +46,10 @@ describe("StartTaskNotebookSessionUseCase", () => {
 
     const result = await useCase.execute({
       studentId: Uuid.random().value,
-      notebookId: Uuid.random().value,
+      name: Uuid.random().value,
     });
 
     expect(result).toEqual(failure("STUDENT_NOT_FOUND"));
-    expect(sessionRepo.save).not.toHaveBeenCalled();
-  });
-
-  it("should fail if notebook is not found", async () => {
-    (studentRepo.getById as any).mockResolvedValue({ id: Uuid.random() });
-    (notebookRepo.getById as any).mockResolvedValue(null);
-
-    const result = await useCase.execute({
-      studentId: Uuid.random().value,
-      notebookId: Uuid.random().value,
-    });
-
-    expect(result).toEqual(failure("NOTEBOOK_NOT_FOUND"));
     expect(sessionRepo.save).not.toHaveBeenCalled();
   });
 
@@ -76,7 +63,7 @@ describe("StartTaskNotebookSessionUseCase", () => {
 
     const result = await useCase.execute({
       studentId: Uuid.random().value,
-      notebookId: Uuid.random().value,
+      name: Uuid.random().value,
     });
 
     spy.mockRestore();
@@ -94,7 +81,7 @@ describe("StartTaskNotebookSessionUseCase", () => {
 
     const executeResult = await useCase.execute({
       studentId: studentId.value,
-      notebookId: notebookId.value,
+      name: notebookId.value,
     });
 
     expect(executeResult.ok).toBe(true);
@@ -104,7 +91,7 @@ describe("StartTaskNotebookSessionUseCase", () => {
 
     expect(savedSession).toBeTruthy();
     expect(savedSession.studentId).toEqual(studentId);
-    expect(savedSession.notebookId).toEqual(notebookId);
+    expect(savedSession.name).toEqual(notebookId.value);
     expect(savedSession.answers.length).toBe(0);
     expect(savedSession.startedAt).toBeInstanceOf(Date);
   });
