@@ -47,6 +47,7 @@ describe("StartTaskNotebookSessionUseCase", () => {
     const result = await useCase.execute({
       studentId: Uuid.random().value,
       name: Uuid.random().value,
+      educatorId: Uuid.random(),
     });
 
     expect(result).toEqual(failure("STUDENT_NOT_FOUND"));
@@ -64,6 +65,7 @@ describe("StartTaskNotebookSessionUseCase", () => {
     const result = await useCase.execute({
       studentId: Uuid.random().value,
       name: Uuid.random().value,
+      educatorId: Uuid.random(),
     });
 
     spy.mockRestore();
@@ -82,6 +84,7 @@ describe("StartTaskNotebookSessionUseCase", () => {
     const executeResult = await useCase.execute({
       studentId: studentId.value,
       name: notebookId.value,
+      educatorId: Uuid.random(),
     });
 
     expect(executeResult.ok).toBe(true);

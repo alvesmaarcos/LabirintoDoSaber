@@ -10,7 +10,7 @@ describe("TaskNotebookSession Entity", () => {
     const studentId = Uuid.random();
     const notebookId = Uuid.random();
 
-    const result = TaskNotebookSession.start(studentId, "name");
+    const result = TaskNotebookSession.start(studentId, "name", Uuid.random());
 
     expect(result.ok).toBe(true);
     const session = result.ok && "value" in result ? result.value : undefined;
@@ -26,7 +26,11 @@ describe("TaskNotebookSession Entity", () => {
     const studentId = Uuid.random();
     const notebookId = Uuid.random();
 
-    const startResult = TaskNotebookSession.start(studentId, "name");
+    const startResult = TaskNotebookSession.start(
+      studentId,
+      "name",
+      Uuid.random()
+    );
     const session =
       startResult.ok && "value" in startResult ? startResult.value : undefined;
 
@@ -53,7 +57,11 @@ describe("TaskNotebookSession Entity", () => {
     const studentId = Uuid.random();
     const notebookId = Uuid.random();
 
-    const startResult = TaskNotebookSession.start(studentId, "name");
+    const startResult = TaskNotebookSession.start(
+      studentId,
+      "name",
+      Uuid.random()
+    );
     const session =
       startResult.ok && "value" in startResult ? startResult.value : undefined;
 
@@ -80,7 +88,11 @@ describe("TaskNotebookSession Entity", () => {
   it("should finish a session successfully", () => {
     const studentId = Uuid.random();
 
-    const startResult = TaskNotebookSession.start(studentId, "name");
+    const startResult = TaskNotebookSession.start(
+      studentId,
+      "name",
+      Uuid.random()
+    );
     const session =
       startResult.ok && "value" in startResult ? startResult.value : undefined;
 
@@ -99,7 +111,11 @@ describe("TaskNotebookSession Entity", () => {
     const studentId = Uuid.random();
     const notebookId = Uuid.random();
 
-    const startResult = TaskNotebookSession.start(studentId, "name");
+    const startResult = TaskNotebookSession.start(
+      studentId,
+      "name",
+      Uuid.random()
+    );
     const session =
       startResult.ok && "value" in startResult ? startResult.value : undefined;
 

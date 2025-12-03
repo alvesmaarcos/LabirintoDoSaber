@@ -12,13 +12,21 @@ export class StartTaskNotebookSessionController extends BaseController {
   }
 
   async executeImpl(req: Request, res: Response): Promise<unknown> {
+    const user = req.user;
+    if (!user) {
+      return this.unauthorized(res);
+    }
+
     const validation = await startTaskSessionSchema.safeParseAsync(req.body);
     if (!validation.success) {
       const errors = formatValidationErrors(validation.error);
       return this.clientError(res, undefined, errors);
     }
 
-    const result = await this.useCase.execute(validation.data);
+    const result = await this.useCase.execute({
+      ...validation.data,
+      educatorId: user.id,
+    });
 
     if (!result.ok) {
       switch (result.error) {

@@ -109,6 +109,7 @@ enum TaskNotebookCategory {
 
 model TaskNotebookSession {
   id         String        @id @map("_id")
+  educatorId String
   studentId  String        
   name       String        
   startedAt  DateTime

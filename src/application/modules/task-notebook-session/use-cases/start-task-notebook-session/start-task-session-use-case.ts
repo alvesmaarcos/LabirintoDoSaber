@@ -7,6 +7,7 @@ import { TaskNotebookSessionRepository } from "../../../../../domain/repositorie
 export interface StartTaskNotebookSessionUseCaseRequest {
   studentId: string;
   name: string;
+  educatorId: Uuid;
 }
 
 export class StartTaskNotebookSessionUseCase {
@@ -25,7 +26,11 @@ export class StartTaskNotebookSessionUseCase {
       return failure("STUDENT_NOT_FOUND");
     }
 
-    const session = TaskNotebookSession.start(student.id, request.name);
+    const session = TaskNotebookSession.start(
+      student.id,
+      request.name,
+      request.educatorId
+    );
 
     if (!session.ok) {
       return failure("SESSION_CREATION_FAILED");

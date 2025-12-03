@@ -13,11 +13,20 @@ import { GenerateAuthTokenController } from "../use-cases/generate-auth-token/ge
 import { GetEducatorProfileUseCase } from "../use-cases/get-educator-profile/get-educator-profile-use-case";
 import { GetEducatorProfileController } from "../use-cases/get-educator-profile/get-educator-profile-controller";
 import { makeAuthMiddleware } from "../../../../infraestructure/middlewares/index";
-import { makeEducatorRepository } from "../../../../infraestructure/factories";
+import {
+  makeEducatorRepository,
+  makeStudentRepository,
+  makeTaskNotebookSessionRepository,
+} from "../../../../infraestructure/factories";
+import { GetEducatorLastSessionsUseCase } from "../use-cases/get-educator-last-sessions/get-educator-last-sessions-use-case";
+import { GetEducatorLastSessionsController } from "../use-cases/get-educator-last-sessions/get-educator-last-sessions-controller";
 
 const educatorRouter = Router();
 
 const educatorRepository = makeEducatorRepository({ isMock: false });
+const studentRepository = makeStudentRepository({ isMock: false });
+const taskNotebookSessionRepository = makeTaskNotebookSessionRepository();
+
 const authService = new JwtAuthService();
 
 const authMiddleware = makeAuthMiddleware(educatorRepository);
@@ -44,6 +53,12 @@ const generateAuthTokenUseCase = new GenerateAuthTokenUseCase(
   mailer
 );
 
+const getEducatorLastSessionsUseCase = new GetEducatorLastSessionsUseCase(
+  educatorRepository,
+  taskNotebookSessionRepository,
+  studentRepository
+);
+
 educatorRouter.post("/sign-in", (req: Request, res: Response) => {
   new SignInEducatorController(signInEducatorUseCase).execute(req, res);
 });
@@ -66,5 +81,15 @@ educatorRouter.put("/generate-token", async (req: Request, res: Response) => {
 educatorRouter.get("/me", authMiddleware, (req: Request, res: Response) => {
   new GetEducatorProfileController(getEducatorProfileUseCase).execute(req, res);
 });
+
+educatorRouter.get(
+  "/get-last-sessions",
+  authMiddleware,
+  (req: Request, res: Response) => {
+    new GetEducatorLastSessionsController(
+      getEducatorLastSessionsUseCase
+    ).execute(req, res);
+  }
+);
 
 export { educatorRouter };
