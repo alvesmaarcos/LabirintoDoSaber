@@ -23,6 +23,7 @@ export class StudentRepositoryImpl implements StudentRepository {
         housenumber: student.housenumber,
         phonenumber: student.phonenumber,
         learningTopics: student.learningTopics,
+        photoUrl: student.photoUrl
       },
       create: {
         educatorId: student.educatorId.value,
@@ -36,6 +37,7 @@ export class StudentRepositoryImpl implements StudentRepository {
         phonenumber: student.phonenumber,
         learningTopics: student.learningTopics,
         createdAt: student.createdAt,
+        photoUrl: student.photoUrl
       },
       include: {
         educatorStudents: {
@@ -120,6 +122,7 @@ export class StudentRepositoryImpl implements StudentRepository {
       createdAt: prismaStudent.createdAt,
       educators,
       educatorId: new Uuid(prismaStudent.educatorId),
+      photoUrl: prismaStudent.photoUrl ?? undefined,
     });
   }
 

@@ -19,6 +19,8 @@ export class CreateStudentController extends BaseController {
       return this.clientError(res, undefined, errors);
     }
 
+    const photoUrl = req.url && (req.url as any).photoUrl?.[0];
+
     const payload = validation.data;
     const educator = req.user;
 
@@ -29,6 +31,7 @@ export class CreateStudentController extends BaseController {
     const result = await this.useCase.execute({
       educatorEmail: educator.email,
       ...payload,
+      photoUrl,
     });
 
     if (!result.ok) {
