@@ -11,7 +11,6 @@ import {
   makeFileStorage,
   makeStudentRepository,
 } from "../../../../infraestructure/factories";
-import { Multer } from "../../../../infraestructure/upload/multer-config";
 
 const studentRouter = Router();
 
@@ -37,13 +36,9 @@ const authMiddleware = makeAuthMiddleware(educatorRepository);
 
 studentRouter.use(authMiddleware);
 
-studentRouter.post(
-  "/create",
-  Multer.getUploader(5).single("photo"),
-  async (req, res) => {
-    new CreateStudentController(createStudentUseCase).execute(req, res);
-  }
-);
+studentRouter.post("/create", async (req, res) => {
+  new CreateStudentController(createStudentUseCase).execute(req, res);
+});
 
 studentRouter.post("/assign-educator", async (req, res) => {
   new AssignEducatorController(assignEducatorUseCase).execute(req, res);
