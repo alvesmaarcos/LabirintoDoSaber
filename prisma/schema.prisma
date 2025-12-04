@@ -30,6 +30,7 @@ model Student {
   housenumber    String
   phonenumber    String
   learningTopics String[]
+  photoUrl       String?
   createdAt      DateTime @default(now())
   educatorId     String
 

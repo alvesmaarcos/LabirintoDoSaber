@@ -11,6 +11,7 @@ export interface CreateStudentUseCaseRequest {
   road: string;
   housenumber: string;
   phonenumber: string;
+  photoUrl?: Express.Multer.File;
   learningTopics: string[];
   educatorEmail: string;
 }
