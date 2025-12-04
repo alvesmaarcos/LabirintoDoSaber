@@ -12,7 +12,7 @@ export interface CreateStudentUseCaseRequest {
   road: string;
   housenumber: string;
   phonenumber: string;
-  photoUrl?: Express.Multer.File;
+  photo?: Express.Multer.File;
   learningTopics: string[];
   educatorEmail: string;
 }
@@ -35,10 +35,10 @@ export class CreateStudentUseCase {
 
     let photoUrl: string | undefined;
     const id = Uuid.random();
-    if (request.photoUrl) {
+    if (request.photo) {
       const photoSaveResult = await this.fileStorage.saveFile({
-        taskId: id.value, 
-        file: request.photoUrl,
+        taskId: id.value,
+        file: request.photo,
       });
       photoUrl = photoSaveResult.url;
     }
@@ -57,7 +57,6 @@ export class CreateStudentUseCase {
       educatorId: educatorExists.id,
       photoUrl: photoUrl,
     });
-
 
     await this.studentRepository.save(student);
 
