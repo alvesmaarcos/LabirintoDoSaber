@@ -8,6 +8,7 @@ import { EducatorRepository } from "../../../../../domain/repositories/educator-
 import { Educator } from "../../../../../domain/entities/educator";
 import { Gender } from "../../../../../domain/entities/student";
 import { success, failure } from "@wave-telecom/framework/core";
+import { FileStorage } from "../../../../services/file-storage";
 
 // Mock dos repositórios
 const mockStudentRepository = (): StudentRepository =>
@@ -20,15 +21,32 @@ const mockEducatorRepository = (): EducatorRepository =>
     getByEmail: vi.fn(),
   } as unknown as EducatorRepository);
 
+const mockFileStorage = () =>
+  ({
+    saveFile: vi.fn().mockResolvedValue({ url: "http://mockurl.com/file" }),
+  } as any);
+
+const mockImageFile: Express.Multer.File = {
+  fieldname: "imageFile",
+  originalname: "image.png",
+  encoding: "7bit",
+  mimetype: "image/png",
+  buffer: Buffer.from("fake image buffer"),
+  size: 1234,
+} as any;
+
+
 describe("CreateStudentUseCase", () => {
   let studentRepository: StudentRepository;
   let educatorRepository: EducatorRepository;
   let useCase: CreateStudentUseCase;
+  let fileStorage: FileStorage
 
   beforeEach(() => {
     studentRepository = mockStudentRepository();
     educatorRepository = mockEducatorRepository();
-    useCase = new CreateStudentUseCase(studentRepository, educatorRepository);
+    fileStorage = mockFileStorage();
+    useCase = new CreateStudentUseCase(studentRepository, educatorRepository, fileStorage);
   });
 
   it("should fail if educator does not exist", async () => {
