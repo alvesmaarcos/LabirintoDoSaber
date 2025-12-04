@@ -1,8 +1,7 @@
-import { failure, success, Uuid } from "@wave-telecom/framework/core";
+import { failure, success } from "@wave-telecom/framework/core";
 import { Gender, Student } from "../../../../../domain/entities/student";
 import { EducatorRepository } from "../../../../../domain/repositories/educator-repository";
 import { StudentRepository } from "../../../../../domain/repositories/student-repository";
-import { FileStorage } from "../../../../services/file-storage";
 
 export interface CreateStudentUseCaseRequest {
   name: string;
@@ -20,8 +19,7 @@ export interface CreateStudentUseCaseRequest {
 export class CreateStudentUseCase {
   constructor(
     private studentRepository: StudentRepository,
-    private educatorRepository: EducatorRepository,
-    private fileStorage: FileStorage
+    private educatorRepository: EducatorRepository
   ) {}
 
   async execute(request: CreateStudentUseCaseRequest) {
@@ -33,18 +31,7 @@ export class CreateStudentUseCase {
       return failure("EDUCATOR_NOT_FOUND");
     }
 
-    let photoUrl: string | undefined;
-    const id = Uuid.random();
-    if (request.photoUrl) {
-      const photoSaveResult = await this.fileStorage.saveFile({
-        taskId: id.value, 
-        file: request.photoUrl,
-      });
-      photoUrl = photoSaveResult.url;
-    }
-
     const student = Student.create({
-      id: id,
       name: request.name,
       age: request.age,
       gender: request.gender,
@@ -55,9 +42,7 @@ export class CreateStudentUseCase {
       learningTopics: request.learningTopics,
       educators: [educatorExists],
       educatorId: educatorExists.id,
-      photoUrl: photoUrl,
     });
-
 
     await this.studentRepository.save(student);
 
