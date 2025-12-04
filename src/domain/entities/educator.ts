@@ -6,6 +6,7 @@ interface CreateEducatorProps {
   name: string;
   email: string;
   password: string;
+  photoUrl?: string;
 }
 
 export class Educator {
@@ -14,7 +15,8 @@ export class Educator {
     public readonly name: string,
     public readonly email: string,
     private _password: string,
-    public readonly createdAt: Date
+    public readonly createdAt: Date,
+    private _photoUrl?: string
   ) {}
 
   static create(props: CreateEducatorProps) {
@@ -23,12 +25,21 @@ export class Educator {
       props.name,
       props.email,
       props.password,
-      props.createdAt || new Date()
+      props.createdAt || new Date(),
+      props.photoUrl
     );
   }
 
   get password(): string {
     return this._password;
+  }
+
+  get photoUrl(): string | undefined {
+    return this._photoUrl;
+  }
+
+  updateProfilePicture(photoUrl: string) {
+    this._photoUrl = photoUrl;
   }
 
   updatePassword(newPassword: string) {

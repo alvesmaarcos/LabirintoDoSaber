@@ -18,11 +18,13 @@ export class EducatorRepositoryImpl implements EducatorRepository {
         email: educator.email,
         password: educator.password,
         createdAt: educator.createdAt,
+        photoUrl: educator.photoUrl,
       },
       update: {
         name: educator.name,
         email: educator.email,
         password: educator.password,
+        photoUrl: educator.photoUrl,
       },
     });
     return this.mapToEntity(result);
@@ -55,6 +57,7 @@ export class EducatorRepositoryImpl implements EducatorRepository {
       email: prismaEducator.email,
       password: prismaEducator.password,
       createdAt: prismaEducator.createdAt,
+      photoUrl: prismaEducator.photoUrl ?? undefined,
     });
   }
 }

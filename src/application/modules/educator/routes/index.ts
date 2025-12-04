@@ -15,11 +15,15 @@ import { GetEducatorProfileController } from "../use-cases/get-educator-profile/
 import { makeAuthMiddleware } from "../../../../infraestructure/middlewares/index";
 import {
   makeEducatorRepository,
+  makeFileStorage,
   makeStudentRepository,
   makeTaskNotebookSessionRepository,
 } from "../../../../infraestructure/factories";
 import { GetEducatorLastSessionsUseCase } from "../use-cases/get-educator-last-sessions/get-educator-last-sessions-use-case";
 import { GetEducatorLastSessionsController } from "../use-cases/get-educator-last-sessions/get-educator-last-sessions-controller";
+import { EducatorUpdateProfilePictureUseCase } from "../use-cases/educator-update-profile-picture/educator-update-profile-picture-use-case";
+import { Multer } from "../../../../infraestructure/upload/multer-config";
+import { EducatorUpdateProfilePictureController } from "../use-cases/educator-update-profile-picture/educator-update-profile-picture-controller";
 
 const educatorRouter = Router();
 
@@ -59,6 +63,11 @@ const getEducatorLastSessionsUseCase = new GetEducatorLastSessionsUseCase(
   studentRepository
 );
 
+const educatorUpdateProfilePicture = new EducatorUpdateProfilePictureUseCase(
+  makeFileStorage(),
+  educatorRepository
+);
+
 educatorRouter.post("/sign-in", (req: Request, res: Response) => {
   new SignInEducatorController(signInEducatorUseCase).execute(req, res);
 });
@@ -88,6 +97,17 @@ educatorRouter.get(
   (req: Request, res: Response) => {
     new GetEducatorLastSessionsController(
       getEducatorLastSessionsUseCase
+    ).execute(req, res);
+  }
+);
+
+educatorRouter.put(
+  "/update-profile-picture",
+  authMiddleware,
+  Multer.getUploader(5).single("photo"),
+  (req: Request, res: Response) => {
+    new EducatorUpdateProfilePictureController(
+      educatorUpdateProfilePicture
     ).execute(req, res);
   }
 );
