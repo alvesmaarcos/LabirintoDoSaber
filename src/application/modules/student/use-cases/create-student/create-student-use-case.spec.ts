@@ -26,27 +26,21 @@ const mockFileStorage = () =>
     saveFile: vi.fn().mockResolvedValue({ url: "http://mockurl.com/file" }),
   } as any);
 
-const mockImageFile: Express.Multer.File = {
-  fieldname: "imageFile",
-  originalname: "image.png",
-  encoding: "7bit",
-  mimetype: "image/png",
-  buffer: Buffer.from("fake image buffer"),
-  size: 1234,
-} as any;
-
-
 describe("CreateStudentUseCase", () => {
   let studentRepository: StudentRepository;
   let educatorRepository: EducatorRepository;
   let useCase: CreateStudentUseCase;
-  let fileStorage: FileStorage
+  let fileStorage: FileStorage;
 
   beforeEach(() => {
     studentRepository = mockStudentRepository();
     educatorRepository = mockEducatorRepository();
     fileStorage = mockFileStorage();
-    useCase = new CreateStudentUseCase(studentRepository, educatorRepository, fileStorage);
+    useCase = new CreateStudentUseCase(
+      studentRepository,
+      educatorRepository,
+      fileStorage
+    );
   });
 
   it("should fail if educator does not exist", async () => {

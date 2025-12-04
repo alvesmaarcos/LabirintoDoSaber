@@ -12,6 +12,18 @@ export class CreateStudentController extends BaseController {
   }
 
   async executeImpl(req: Request, res: Response): Promise<Response> {
+    if (typeof req.body.age === "string") {
+      req.body.age = Number(req.body.age);
+    }
+
+    if (typeof req.body.learningTopics === "string") {
+      try {
+        req.body.learningTopics = JSON.parse(req.body.learningTopics);
+      } catch {
+        req.body.learningTopics = req.body.learningTopics.split(",");
+      }
+    }
+
     const validation = await createStudentSchema.safeParseAsync(req.body);
 
     if (!validation.success) {
@@ -19,7 +31,11 @@ export class CreateStudentController extends BaseController {
       return this.clientError(res, undefined, errors);
     }
 
-    const photoUrl = req.url && (req.url as any).photoUrl?.[0];
+    const photo = req.file;
+
+    if (!photo) {
+      return this.clientError(res, "PROFILE_PICTURE_REQUIRED");
+    }
 
     const payload = validation.data;
     const educator = req.user;
@@ -31,7 +47,7 @@ export class CreateStudentController extends BaseController {
     const result = await this.useCase.execute({
       educatorEmail: educator.email,
       ...payload,
-      photoUrl,
+      photo,
     });
 
     if (!result.ok) {
