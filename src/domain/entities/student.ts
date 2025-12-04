@@ -19,6 +19,7 @@ export interface CreateStudentProps {
   learningTopics: string[];
   educators: Educator[];
   educatorId: Uuid;
+  photoUrl?: string;
 }
 
 export class Student {
@@ -34,7 +35,8 @@ export class Student {
     public readonly learningTopics: string[],
     public readonly createdAt: Date,
     public readonly educators: Educator[],
-    public readonly educatorId: Uuid
+    public readonly educatorId: Uuid,
+    public readonly photoUrl?: string
   ) {}
 
   static create(props: CreateStudentProps) {
@@ -50,7 +52,8 @@ export class Student {
       props.learningTopics,
       props.createdAt || new Date(),
       props.educators,
-      props.educatorId
+      props.educatorId,
+      props.photoUrl
     );
   }
 
