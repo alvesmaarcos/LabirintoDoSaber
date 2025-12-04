@@ -8,6 +8,7 @@ import { ListStudentsByEducatorController } from "../use-cases/list-students-by-
 import { makeAuthMiddleware } from "../../../../infraestructure/middlewares";
 import {
   makeEducatorRepository,
+  makeFileStorage,
   makeStudentRepository,
 } from "../../../../infraestructure/factories";
 
@@ -18,7 +19,8 @@ const studentRepository = makeStudentRepository({ isMock: false });
 
 const createStudentUseCase = new CreateStudentUseCase(
   studentRepository,
-  educatorRepository
+  educatorRepository,
+  makeFileStorage()
 );
 
 const assignEducatorUseCase = new AssignEducatorUseCase(
