@@ -5,6 +5,7 @@ export interface SearchEducatorProps {
   id?: Uuid;
   email?: string;
   name?: string;
+  contact?: string;
 }
 
 export interface EducatorRepository {

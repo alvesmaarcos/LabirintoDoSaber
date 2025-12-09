@@ -1,26 +1,26 @@
-import { failure, success, Uuid } from "@wave-telecom/framework/core"; 
+import { failure, success, Uuid } from "@wave-telecom/framework/core";
 import { EducatorRepository } from "../../../../../domain/repositories/educator-repository";
 
-
 interface GetEducatorProfileUseCaseRequest {
-  educatorId: Uuid; 
+  educatorId: Uuid;
 }
 
 interface EducatorProfileResponse {
   id: string;
   name: string;
   email: string;
+  photoUrl: string | undefined;
 }
 
 export class GetEducatorProfileUseCase {
-  constructor(
-    private educatorRepository: EducatorRepository
-  ) {}
+  constructor(private educatorRepository: EducatorRepository) {}
 
   async execute(request: GetEducatorProfileUseCaseRequest) {
     const educatorUuid = request.educatorId;
 
-    const educators = await this.educatorRepository.search({ id: educatorUuid });
+    const educators = await this.educatorRepository.search({
+      id: educatorUuid,
+    });
 
     if (!educators || educators.length === 0) {
       return failure("EDUCATOR_NOT_FOUND");
@@ -32,6 +32,7 @@ export class GetEducatorProfileUseCase {
       id: educator.id.toString(),
       name: educator.name,
       email: educator.email,
+      photoUrl: educator.photoUrl,
     };
 
     return success(educatorDetails);

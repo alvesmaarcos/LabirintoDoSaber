@@ -24,6 +24,8 @@ import { GetEducatorLastSessionsController } from "../use-cases/get-educator-las
 import { EducatorUpdateProfilePictureUseCase } from "../use-cases/educator-update-profile-picture/educator-update-profile-picture-use-case";
 import { Multer } from "../../../../infraestructure/upload/multer-config";
 import { EducatorUpdateProfilePictureController } from "../use-cases/educator-update-profile-picture/educator-update-profile-picture-controller";
+import { UpdateEducatorController } from "../use-cases/update-educator/update-educator-controller";
+import { UpdateEducatorUseCase } from "../use-cases/update-educator/update-educator-use-case";
 
 const educatorRouter = Router();
 
@@ -56,6 +58,8 @@ const generateAuthTokenUseCase = new GenerateAuthTokenUseCase(
   authTokenRepository,
   mailer
 );
+
+const updateEducatorUseCase = new UpdateEducatorUseCase(educatorRepository);
 
 const getEducatorLastSessionsUseCase = new GetEducatorLastSessionsUseCase(
   educatorRepository,
@@ -109,6 +113,14 @@ educatorRouter.put(
     new EducatorUpdateProfilePictureController(
       educatorUpdateProfilePicture
     ).execute(req, res);
+  }
+);
+
+educatorRouter.put(
+  "/update-educator",
+  authMiddleware,
+  (req: Request, res: Response) => {
+    new UpdateEducatorController(updateEducatorUseCase).execute(req, res);
   }
 );
 

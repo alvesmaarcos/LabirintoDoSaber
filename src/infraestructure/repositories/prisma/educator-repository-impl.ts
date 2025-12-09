@@ -19,12 +19,14 @@ export class EducatorRepositoryImpl implements EducatorRepository {
         password: educator.password,
         createdAt: educator.createdAt,
         photoUrl: educator.photoUrl,
+        contact: educator.contact,
       },
       update: {
         name: educator.name,
         email: educator.email,
         password: educator.password,
         photoUrl: educator.photoUrl,
+        contact: educator.contact,
       },
     });
     return this.mapToEntity(result);
@@ -34,6 +36,7 @@ export class EducatorRepositoryImpl implements EducatorRepository {
       id: props.id ? props.id.value : undefined,
       email: props.email,
       name: props.name,
+      contact: props.contact,
     };
     const prismaEducators = await this.prismaService.educator.findMany({
       where,
@@ -58,6 +61,7 @@ export class EducatorRepositoryImpl implements EducatorRepository {
       password: prismaEducator.password,
       createdAt: prismaEducator.createdAt,
       photoUrl: prismaEducator.photoUrl ?? undefined,
+      contact: prismaEducator.contact ?? undefined,
     });
   }
 }
