@@ -19,6 +19,12 @@ export interface CreateTaskNotebookProps {
   taskGroupsIds?: string[];
 }
 
+export interface UpdateTaskNotebookProps {
+  category?: TaskNotebookCategory;
+  description?: string;
+  taskGroupsIds?: string[];
+}
+
 export class TaskNotebook {
   private constructor(
     public readonly id: Uuid,
@@ -58,13 +64,31 @@ export class TaskNotebook {
       this.id,
       this.educator,
       updatedTasks,
-      TaskNotebookCategory.Comprehension,
+      this.category,
       this.description,
       this.createdAt,
       this.taskGroupsIds
     );
 
     return success(updatedNotebook);
+  }
+
+  public updateTaskNotebook(props: UpdateTaskNotebookProps) {
+      try {
+        const updated = new TaskNotebook(
+          this.id,
+          this.educator,           
+          this.tasks,              
+          props.category ?? this.category,
+          props.description ?? this.description,
+          this.createdAt,          
+          props.taskGroupsIds ?? this.taskGroupsIds
+        );
+
+      return success(updated);
+    } catch (e) {
+      return failure("INVALID_TASK_NOTEBOOK_DATA");
+    }
   }
 
   public listTasks() {
