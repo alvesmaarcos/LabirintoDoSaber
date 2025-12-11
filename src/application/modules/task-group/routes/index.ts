@@ -10,6 +10,8 @@ import { ListByEducatorUseCase } from "../use-cases/list-by-educator/list-by-edu
 import { ListByEducatorController } from "../use-cases/list-by-educator/list-by-educator-controller";
 import { DeleteTaskGroupUseCase } from "../use-cases/delete-task-group/delete-task-group-use-case";
 import { DeleteTaskGroupController } from "../use-cases/delete-task-group/delete-task-group-controller";
+import { UpdateTaskGroupUseCase } from "../use-cases/update-task-group/update-task-group-use-case";
+import { UpdateTaskGroupController } from "../use-cases/update-task-group/update-task-group-controller";
 
 const taskGroupRouter = Router();
 
@@ -23,6 +25,8 @@ const createTaskGroupUseCase = new CreateTaskGroupUseCase(
 
 const listByEducatorUseCase = new ListByEducatorUseCase(taskGroupRepository);
 
+const updateTaskGroupUseCase = new UpdateTaskGroupUseCase(taskGroupRepository);
+
 const deleteTaskGroupUseCase = new DeleteTaskGroupUseCase(taskGroupRepository);
 
 const authMiddleware = makeAuthMiddleware(educatorRepository);
@@ -34,6 +38,10 @@ taskGroupRouter.post("/create", (req: Request, res: Response) => {
 
 taskGroupRouter.get("/list-by-educator", (req: Request, res: Response) => {
   new ListByEducatorController(listByEducatorUseCase).execute(req, res);
+});
+
+taskGroupRouter.put("/update", (req: Request, res: Response) => {
+  new UpdateTaskGroupController(updateTaskGroupUseCase).execute(req, res);
 });
 
 taskGroupRouter.delete("/delete/:taskGroupId", (req: Request, res: Response) => {

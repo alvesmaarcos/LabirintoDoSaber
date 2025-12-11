@@ -1,12 +1,20 @@
-import { Uuid } from "@wave-telecom/framework/core";
+import { success, failure, Uuid } from "@wave-telecom/framework/core";
 import { TaskCategory } from "./task";
 
 export interface CreateTaskGroupProps {
   id?: Uuid;
   name: string;
-  tasksId?: string[];
+  tasksIds?: string[];
   educatorId: Uuid;
   category: TaskCategory;
+}
+
+export interface UpdateTaskGroupProps {
+  id?: string;
+  name?: string;
+  tasksIds?: string[];
+  educatorId?: string;
+  category?: TaskCategory;
 }
 
 export class TaskGroup {
@@ -23,9 +31,25 @@ export class TaskGroup {
     return new TaskGroup(
       id,
       props.name,
-      props.tasksId ?? [],
+      props.tasksIds ?? [],
       props.educatorId,
       props.category
     );
+  }
+
+  public updateTaskGroup(props: UpdateTaskGroupProps) {
+    try {
+      const updatedTaskGroup = new TaskGroup(
+        this.id,
+        props.name ?? this.name,
+        props.tasksIds ?? this.tasksIds,
+        props.educatorId ? new Uuid(props.educatorId) : this.educatorId,
+        props.category ?? this.category
+      );
+
+      return success(updatedTaskGroup);
+    } catch (e) {
+      return failure("INVALID_TASK_GROUP_DATA");
+    } 
   }
 }

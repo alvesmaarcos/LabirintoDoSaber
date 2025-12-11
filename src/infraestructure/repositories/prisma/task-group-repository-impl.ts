@@ -65,7 +65,7 @@ export class TaskGroupRepositoryImpl implements TaskGroupRepository {
     return TaskGroup.create({
       id: new Uuid(prismaTaskGroup.id),
       name: prismaTaskGroup.name,
-      tasksId: prismaTaskGroup.taskIds,
+      tasksIds: prismaTaskGroup.taskIds,
       educatorId: new Uuid(prismaTaskGroup.educatorId),
       category: this.mapCategoryFromPrisma(prismaTaskGroup.category),
     });

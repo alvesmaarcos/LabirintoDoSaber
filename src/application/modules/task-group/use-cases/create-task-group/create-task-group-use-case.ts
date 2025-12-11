@@ -6,7 +6,7 @@ import { TaskGroup } from "../../../../../domain/entities/task-group";
 
 interface CreateTaskGroupUseCaseRequest {
   name: string;
-  tasksId?: string[];
+  tasksIds?: string[];
   educatorEmail: string;
   category: TaskCategory;
 }
@@ -28,7 +28,7 @@ export class CreateTaskGroupUseCase {
 
     const taskGroup = TaskGroup.create({
       name: request.name,
-      tasksId: request.tasksId,
+      tasksIds: request.tasksIds,
       educatorId: educatorExists.id,
       category: request.category,
     });
