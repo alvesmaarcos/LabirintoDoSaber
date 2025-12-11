@@ -6,6 +6,17 @@ export enum Gender {
   Female = "female",
 }
 
+export interface UpdateStudentProps {
+  name?: string;
+  age?: number;
+  gender?: Gender;
+  zipcode?: string;
+  road?: string;
+  housenumber?: string;
+  phonenumber?: string;
+  learningTopics?: string[];
+}
+
 export interface CreateStudentProps {
   id?: Uuid;
   createdAt?: Date;
@@ -25,18 +36,18 @@ export interface CreateStudentProps {
 export class Student {
   private constructor(
     public readonly id: Uuid,
-    public readonly name: string,
-    public readonly age: number,
-    public readonly gender: Gender,
-    public readonly zipcode: string,
-    public readonly road: string,
-    public readonly housenumber: string,
-    public readonly phonenumber: string,
-    public readonly learningTopics: string[],
+    private _name: string,
+    private _age: number,
+    private _gender: Gender,
+    private _zipcode: string,
+    private _road: string,
+    private _housenumber: string,
+    private _phonenumber: string,
+    private _learningTopics: string[],
     public readonly createdAt: Date,
     public readonly educators: Educator[],
     public readonly educatorId: Uuid,
-    public readonly photoUrl?: string
+    private _photoUrl?: string
   ) {}
 
   static create(props: CreateStudentProps) {
@@ -59,5 +70,55 @@ export class Student {
 
   assignEducator(educator: Educator) {
     this.educators.push(educator);
+  }
+
+  updatePhoto(photoUrl: string) {
+    this._photoUrl = photoUrl;
+  }
+
+  update(props: UpdateStudentProps) {
+    this._name = props.name ?? this._name;
+    this._age = props.age ?? this._age;
+    this._gender = props.gender ?? this._gender;
+    this._zipcode = props.zipcode ?? this._zipcode;
+    this._road = props.road ?? this._road;
+    this._housenumber = props.housenumber ?? this._housenumber;
+    this._phonenumber = props.phonenumber ?? this._phonenumber;
+  }
+
+  get photoUrl(): string | undefined {
+    return this._photoUrl;
+  }
+
+  get name(): string {
+    return this._name;
+  }
+
+  get age(): number {
+    return this._age;
+  }
+
+  get gender(): Gender {
+    return this._gender;
+  }
+
+  get zipcode(): string {
+    return this._zipcode;
+  }
+
+  get road(): string {
+    return this._road;
+  }
+
+  get housenumber(): string {
+    return this._housenumber;
+  }
+
+  get phonenumber(): string {
+    return this._phonenumber;
+  }
+
+  get learningTopics(): string[] {
+    return this._learningTopics;
   }
 }

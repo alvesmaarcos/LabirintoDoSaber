@@ -12,16 +12,20 @@ import {
   makeStudentRepository,
 } from "../../../../infraestructure/factories";
 import { Multer } from "../../../../infraestructure/upload/multer-config";
+import { UpdateStudentUseCase } from "../use-cases/update-student/update-student-use-case";
+import { UpdateStudentController } from "../use-cases/update-student/update-student-controller";
 
 const studentRouter = Router();
 
 const educatorRepository = makeEducatorRepository({ isMock: false });
 const studentRepository = makeStudentRepository({ isMock: false });
 
+const fileStorage = makeFileStorage();
+
 const createStudentUseCase = new CreateStudentUseCase(
   studentRepository,
   educatorRepository,
-  makeFileStorage()
+  fileStorage
 );
 
 const assignEducatorUseCase = new AssignEducatorUseCase(
@@ -33,9 +37,23 @@ const listStudentByEducatorUseCase = new ListStudentsByEducatorUseCase(
   studentRepository
 );
 
+const updateStudentUseCase = new UpdateStudentUseCase(
+  studentRepository,
+  fileStorage,
+  educatorRepository
+);
+
 const authMiddleware = makeAuthMiddleware(educatorRepository);
 
 studentRouter.use(authMiddleware);
+
+studentRouter.put(
+  "/update/:id",
+  Multer.getUploader(5).single("photo"),
+  async (req, res) => {
+    new UpdateStudentController(updateStudentUseCase).execute(req, res);
+  }
+);
 
 studentRouter.post(
   "/create",
