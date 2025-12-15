@@ -1,6 +1,7 @@
 import { failure, success, Uuid } from "@wave-telecom/framework/core";
 import { EducatorRepository } from "../../../../../domain/repositories/educator-repository";
 import { StudentRepository } from "../../../../../domain/repositories/student-repository";
+import { mapStudentToResponse } from "../../../../../infraestructure/mappers/map-student";
 
 export interface AssignEducatorUseCaseRequest {
   studentId: Uuid;
@@ -37,6 +38,6 @@ export class AssignEducatorUseCase {
     student.assignEducator(newEducator);
 
     await this.studentRepository.save(student);
-    return success(student);
+    return success(mapStudentToResponse(student));
   }
 }

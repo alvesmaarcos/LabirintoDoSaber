@@ -3,6 +3,7 @@ import { Gender, Student } from "../../../../../domain/entities/student";
 import { EducatorRepository } from "../../../../../domain/repositories/educator-repository";
 import { StudentRepository } from "../../../../../domain/repositories/student-repository";
 import { FileStorage } from "../../../../services/file-storage";
+import { mapStudentToResponse } from "../../../../../infraestructure/mappers/map-student";
 
 export interface CreateStudentUseCaseRequest {
   name: string;
@@ -60,6 +61,6 @@ export class CreateStudentUseCase {
 
     await this.studentRepository.save(student);
 
-    return success(student);
+    return success(mapStudentToResponse(student));
   }
 }

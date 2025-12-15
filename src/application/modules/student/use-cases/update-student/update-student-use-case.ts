@@ -3,6 +3,7 @@ import { StudentRepository } from "../../../../../domain/repositories/student-re
 import { FileStorage } from "../../../../services/file-storage";
 import { Gender } from "../../../../../domain/entities/student";
 import { EducatorRepository } from "../../../../../domain/repositories/educator-repository";
+import { mapStudentToResponse } from "../../../../../infraestructure/mappers/map-student";
 
 interface UpdateStudentUseCaseRequest {
   id: string;
@@ -51,6 +52,6 @@ export class UpdateStudentUseCase {
     }
     student.update(props);
     const result = await this.studentRepository.save(student);
-    return success(result);
+    return success(mapStudentToResponse(result));
   }
 }
