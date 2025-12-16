@@ -13,7 +13,7 @@ export const mapStudentToResponse = (student: Student) => {
     learningTopics: student.learningTopics,
     createdAt: student.createdAt,
     educatorId: student.educatorId.value,
-    photoUrl: student.photoUrl,
+    photoUrl: student.photoUrl ?? null,
     educators: student.educators,
   };
 };
