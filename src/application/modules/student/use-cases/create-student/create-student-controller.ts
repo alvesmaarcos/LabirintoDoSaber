@@ -32,11 +32,6 @@ export class CreateStudentController extends BaseController {
     }
 
     const photo = req.file;
-
-    if (!photo) {
-      return this.clientError(res, "PROFILE_PICTURE_REQUIRED");
-    }
-
     const payload = validation.data;
     const educator = req.user;
 
