@@ -10,6 +10,7 @@ interface EducatorProfileResponse {
   name: string;
   email: string;
   photoUrl: string | undefined;
+  contact: string | undefined;
 }
 
 export class GetEducatorProfileUseCase {
@@ -33,6 +34,7 @@ export class GetEducatorProfileUseCase {
       name: educator.name,
       email: educator.email,
       photoUrl: educator.photoUrl,
+      contact: educator.contact,
     };
 
     return success(educatorDetails);
