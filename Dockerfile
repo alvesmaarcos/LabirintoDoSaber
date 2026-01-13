@@ -23,6 +23,7 @@ COPY --from=builder /app/pnpm-lock.yaml /app
 COPY --from=builder /app/dist /app/dist
 
 RUN npm pkg delete scripts.prepare
+RUN npm pkg delete scripts.postinstall
 RUN pnpm install --prod
 
 EXPOSE 8080
