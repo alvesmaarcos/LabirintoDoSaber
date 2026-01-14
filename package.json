@@ -25,6 +25,7 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "nodemailer": "^7.0.10",
+    "prisma": "^6.19.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "zod": "^3.24.1"
@@ -41,7 +42,6 @@
     "@types/swagger-ui-express": "^4.1.8",
     "copyfiles": "^2.4.1",
     "husky": "^9.1.7",
-    "prisma": "^6.19.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"

@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: labirinto-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - labirinto-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    image: ${DOCKER_USERNAME:-zer0rx}/labirinto-do-saber:latest
+    container_name: labirinto-app
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      - PORT=${PORT:-8080}
+      - DATABASE_URL=${DATABASE_URL:-mongodb://admin:admin123@mongodb:27017/labirinto?authSource=admin}
+      - NODE_ENV=${NODE_ENV:-production}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_USER=${MAIL_USER}
+      - MAIL_PASS=${MAIL_PASS}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
+      - AWS_REGION=${AWS_REGION}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - labirinto-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  labirinto-network:
+    driver: bridge

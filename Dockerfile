@@ -21,10 +21,12 @@ RUN npm install -g pnpm
 COPY --from=builder /app/package.json /app
 COPY --from=builder /app/pnpm-lock.yaml /app
 COPY --from=builder /app/dist /app/dist
+COPY --from=builder /app/prisma /app/prisma
 
 RUN npm pkg delete scripts.prepare
 RUN npm pkg delete scripts.postinstall
 RUN pnpm install --prod
+RUN npx prisma generate
 
 EXPOSE 8080
 
