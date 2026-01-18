@@ -1,4 +1,4 @@
-name: Publish Image Docker Hub
+name: CD Node.js Labirinto do Saber
 on:
   push:
     branches: [main]
@@ -22,3 +22,14 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/labirinto-do-saber:${{ github.sha }}
           docker push ${{ secrets.DOCKER_USERNAME }}/labirinto-do-saber:latest
+      - name: Deploy on EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ${{ secrets.EC2_APP_PATH }}
+            docker-compose -f docker-compose.ec2.yml down
+            docker pull ${{ secrets.DOCKER_USERNAME }}/labirinto-do-saber:latest
+            docker-compose -f docker-compose.ec2.yml up -d
