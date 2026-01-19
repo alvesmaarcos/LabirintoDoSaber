@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(router);
 
 app.get("/", (req, res) => {
-  res.json({ message: "Hello from Express on EC2!" });
+  res.json({ message: "Hello from Express from GC!" });
 });
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
