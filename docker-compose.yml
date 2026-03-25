@@ -7,9 +7,7 @@ services:
     restart: unless-stopped
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin123
+    command: ["--replSet", "rs0", "--bind_ip_all"]
     volumes:
       - mongodb_data:/data/db
     networks:
@@ -17,8 +15,22 @@ services:
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+  mongo-init:
+    image: mongo:7.0
+    container_name: labirinto-mongo-init
+    restart: "no"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - labirinto-network
+    entrypoint: >
+      mongosh --host mongodb:27017 --eval
+      "try { rs.status() } catch(e) { rs.initiate({_id:'rs0', members:[{_id:0, host:'mongodb:27017'}]}) }"
 
   app:
     image: ${DOCKER_USERNAME:-zer0rx}/labirinto-do-saber:latest
@@ -28,7 +40,7 @@ services:
       - "${PORT:-8080}:8080"
     environment:
       - PORT=${PORT:-8080}
-      - DATABASE_URL=${DATABASE_URL:-mongodb://admin:admin123@mongodb:27017/labirinto?authSource=admin}
+      - DATABASE_URL=${DATABASE_URL:-mongodb://mongodb:27017/labirinto?replicaSet=rs0&directConnection=true}
       - NODE_ENV=${NODE_ENV:-production}
       - MAIL_HOST=${MAIL_HOST}
       - MAIL_PORT=${MAIL_PORT}
@@ -39,8 +51,8 @@ services:
       - AWS_S3_BUCKET=${AWS_S3_BUCKET}
       - AWS_REGION=${AWS_REGION}
     depends_on:
-      mongodb:
-        condition: service_healthy
+      mongo-init:
+        condition: service_completed_successfully
     networks:
       - labirinto-network
 
