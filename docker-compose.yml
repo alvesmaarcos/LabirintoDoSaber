@@ -32,29 +32,6 @@ services:
       mongosh --host mongodb:27017 --eval
       "try { rs.status() } catch(e) { rs.initiate({_id:'rs0', members:[{_id:0, host:'mongodb:27017'}]}) }"
 
-  app:
-    image: ${DOCKER_USERNAME:-zer0rx}/labirinto-do-saber:latest
-    container_name: labirinto-app
-    restart: unless-stopped
-    ports:
-      - "${PORT:-8080}:8080"
-    environment:
-      - PORT=${PORT:-8080}
-      - DATABASE_URL=${DATABASE_URL:-mongodb://mongodb:27017/labirinto?replicaSet=rs0&directConnection=true}
-      - NODE_ENV=${NODE_ENV:-production}
-      - MAIL_HOST=${MAIL_HOST}
-      - MAIL_PORT=${MAIL_PORT}
-      - MAIL_USER=${MAIL_USER}
-      - MAIL_PASS=${MAIL_PASS}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
-      - AWS_REGION=${AWS_REGION}
-    depends_on:
-      mongo-init:
-        condition: service_completed_successfully
-    networks:
-      - labirinto-network
 
 volumes:
   mongodb_data:
